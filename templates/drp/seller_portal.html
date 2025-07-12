@@ -1,0 +1,513 @@
+<!-- templates/drp/seller_portal.html -->
+{% extends 'base.html' %}
+
+{% block title %}Seller Portal - Walmart DRP{% endblock %}
+
+{% block extra_css %}
+<style>
+    .portal-dashboard {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        padding: 3rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .portal-dashboard::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--blue-gradient);
+    }
+
+    .badge-display {
+        background: linear-gradient(135deg, rgba(0, 113, 206, 0.1), rgba(0, 76, 145, 0.05));
+        border-radius: 20px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid rgba(0, 113, 206, 0.1);
+    }
+
+    .badge-display::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0, 113, 206, 0.05) 0%, transparent 70%);
+        animation: glow 4s ease-in-out infinite;
+    }
+
+    .qr-display {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        border: 3px solid var(--walmart-blue);
+    }
+
+    .qr-display::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: var(--blue-gradient);
+        border-radius: 20px;
+        z-index: -1;
+        animation: borderGlow 3s ease-in-out infinite;
+    }
+
+    .stats-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .stats-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .verification-progress {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 2rem 0;
+        border-left: 5px solid var(--success-green);
+    }
+
+    .progress-step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: rgba(248, 250, 252, 0.8);
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .progress-step:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-step.completed {
+        background: rgba(16, 185, 129, 0.1);
+        border-left: 4px solid var(--success-green);
+    }
+
+    .progress-step.current {
+        background: rgba(0, 113, 206, 0.1);
+        border-left: 4px solid var(--walmart-blue);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-weight: bold;
+        color: white;
+        position: relative;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .action-btn {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(0, 113, 206, 0.1);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: var(--walmart-dark-blue);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        border-color: var(--walmart-blue);
+        color: var(--walmart-dark-blue);
+    }
+
+    .action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 113, 206, 0.05), transparent);
+        transition: left 0.5s;
+    }
+
+    .action-btn:hover::before {
+        left: 100%;
+    }
+
+    .expiry-countdown {
+        background: var(--yellow-gradient);
+        color: var(--walmart-blue);
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        font-weight: 600;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .expiry-countdown::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .business-info-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .badge-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+    }
+
+    @keyframes glow {
+        0%, 100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+        50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.1; }
+    }
+
+    @keyframes borderGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(0, 113, 206, 0.3); }
+        50% { box-shadow: 0 0 30px rgba(0, 113, 206, 0.6); }
+    }
+
+    @keyframes shimmer {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 text-center mb-5 fade-in-up">
+        <h1 class="display-4 fw-bold mb-3" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            <i class="fas fa-store me-3"></i>Seller Portal
+        </h1>
+        <p class="lead text-muted" style="font-size: 1.3rem; max-width: 700px; margin: 0 auto;">
+            Manage your digital reputation, track verifications, and build customer trust
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column - Badge Display -->
+    <div class="col-lg-8 fade-in-up">
+        <div class="portal-dashboard">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="badge-display">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="status-indicator status-active"></div>
+                            <h3 class="mb-0 fw-bold" style="color: var(--walmart-dark-blue);">
+                                Digital Reputation Badge
+                            </h3>
+                            <div class="trust-badge trust-premium ms-auto">
+                                <i class="fas fa-crown me-2"></i>Premium
+                            </div>
+                        </div>
+                        
+                        <div class="business-info-card mb-4">
+                            <h4 class="fw-bold mb-3" style="color: var(--walmart-blue);">
+                                <i class="fas fa-building me-2"></i>TechStore Premium
+                            </h4>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="info-row">
+                                        <span><i class="fas fa-user me-2 text-primary"></i>Owner:</span>
+                                        <strong>John Smith</strong>
+                                    </div>
+                                    <div class="info-row">
+                                        <span><i class="fas fa-envelope me-2 text-primary"></i>Email:</span>
+                                        <strong>john@techstore.com</strong>
+                                    </div>
+                                    <div class="info-row">
+                                        <span><i class="fas fa-phone me-2 text-primary"></i>Phone:</span>
+                                        <strong>+1 (555) 123-4567</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="info-row">
+                                        <span><i class="fas fa-map-marker-alt me-2 text-primary"></i>Location:</span>
+                                        <strong>New York, NY</strong>
+                                    </div>
+                                    <div class="info-row">
+                                        <span><i class="fas fa-calendar me-2 text-primary"></i>Verified:</span>
+                                        <strong>Jan 15, 2025</strong>
+                                    </div>
+                                    <div class="info-row">
+                                        <span><i class="fas fa-star me-2 text-primary"></i>Rating:</span>
+                                        <strong>4.8/5 (247 reviews)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="mb-1 text-success fw-bold">Badge ID: #WMT-2025-001847</p>
+                            <small class="text-muted">Last updated: 2 hours ago</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 text-center">
+                    <div class="qr-display">
+                        <h5 class="fw-bold mb-3" style="color: var(--walmart-blue);">Your QR Code</h5>
+                        <div id="seller-qr-code" style="margin-bottom: 1rem;">
+                            <canvas id="sellerQRCanvas" width="200" height="200"></canvas>
+                        </div>
+                        <p class="small text-muted mb-3">Customers scan this to verify your business</p>
+                        <div class="badge-actions">
+                            <button class="btn btn-walmart btn-sm" onclick="downloadQR()">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                            <button class="btn btn-walmart-yellow btn-sm" onclick="shareQR()">
+                                <i class="fas fa-share me-1"></i>Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expiry Information -->
+        <div class="expiry-countdown mt-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-1"><i class="fas fa-clock me-2"></i>Badge Expiry Status</h5>
+                    <p class="mb-0">Your verification badge expires on <strong>July 15, 2025</strong></p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="fw-bold" style="font-size: 1.8rem;" id="countdown">183 days remaining</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Dashboard -->
+        <div class="row mt-4 g-3">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon" style="background: var(--blue-gradient);">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--walmart-blue);">1,247</h3>
+                    <p class="text-muted mb-0">Total Scans</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon" style="background: var(--green-gradient);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--success-green);">89</h3>
+                    <p class="text-muted mb-0">This Month</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon" style="background: var(--yellow-gradient);">
+                        <i class="fas fa-percentage" style="color: var(--walmart-blue);"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: var(--warning-orange);">99.2%</h3>
+                    <p class="text-muted mb-0">Success Rate</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1" style="color: #8b5cf6;">98</h3>
+                    <p class="text-muted mb-0">Trust Score</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column - Controls and Info -->
+    <div class="col-lg-4 fade-in-up" style="animation-delay: 0.2s;">
+        <!-- Verification Progress -->
+        <div class="verification-progress">
+            <h4 class="fw-bold mb-4" style="color: var(--walmart-dark-blue);">
+                <i class="fas fa-tasks me-2"></i>Verification Status
+            </h4>
+            
+            <div class="progress-step completed">
+                <div class="step-icon" style="background: var(--success-green);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <strong>Business Registration</strong>
+                    <p class="mb-0 small text-muted">Documents verified and approved</p>
+                </div>
+            </div>
+            
+            <div class="progress-step completed">
+                <div class="step-icon" style="background: var(--success-green);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <strong>Identity Verification</strong>
+                    <p class="mb-0 small text-muted">Owner identity confirmed</p>
+                </div>
+            </div>
+            
+            <div class="progress-step completed">
+                <div class="step-icon" style="background: var(--success-green);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <strong>Location Verification</strong>
+                    <p class="mb-0 small text-muted">Business address validated</p>
+                </div>
+            </div>
+            
+            <div class="progress-step completed">
+                <div class="step-icon" style="background: var(--success-green);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div>
+                    <strong>Final Review</strong>
+                    <p class="mb-0 small text-muted">Premium status granted</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card-walmart p-4">
+            <h4 class="fw-bold mb-4" style="color: var(--walmart-dark-blue);">
+                <i class="fas fa-bolt me-2"></i>Quick Actions
+            </h4>
+            
+            <div class="quick-actions">
+                <a href="#" class="action-btn" onclick="renewBadge()">
+                    <div class="mb-3">
+                        <i class="fas fa-sync" style="font-size: 2rem; color: var(--walmart-blue);"></i>
+                    </div>
+                    <strong>Renew Badge</strong>
+                    <p class="small text-muted mb-0">Extend verification period</p>
+                </a>
+                
+                <a href="#" class="action-btn" onclick="editProfile()">
+                    <div class="mb-3">
+                        <i class="fas fa-edit" style="font-size: 2rem; color: var(--success-green);"></i>
+                    </div>
+                    <strong>Edit Profile</strong>
+                    <p class="small text-muted mb-0">Update business information</p>
+                </a>
+                
+                <a href="#" class="action-btn" onclick="viewAnalytics()">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-bar" style="font-size: 2rem; color: var(--warning-orange);"></i>
+                    </div>
+                    <strong>View Analytics</strong>
+                    <p class="small text-muted mb-0">Detailed performance reports</p>
+                </a>
+                
+                <a href="#" class="action-btn" onclick="upgradeLevel()">
+                    <div class="mb-3">
+                        <i class="fas fa-crown" style="font-size: 2rem; color: #8b5cf6;"></i>
+                    </div>
+                    <strong>Upgrade Level</strong>
+                    <p class="small text-muted mb-0">Enhance trust level</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card-walmart p-4 mt-4">
+            <h5 class="fw-bold mb-4" style="color: var(--walmart-dark-blue);">
+                <i class="fas fa-history me-2"></i>Recent Activity
+            </h5>
+            
+            <div class="activity-item mb-3 p-3" style="background: rgba(16, 185, 129, 0.1); border-radius: 10px; border-left: 4px solid var(--success-green);">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong style="color: var(--success-green);">QR Code Scanned</strong>
+                        <p class="mb-1 small">Customer verified your business</p>
+                        <small class="text-muted">IP: 192.168.1.45 • New York, NY</small>
+                    </div>
+                    <small
