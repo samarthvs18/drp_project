@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Dashboard - Walmart DRP</title>
+    <title>Seller Portal - Walmart DRP</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -11,6 +11,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
     
     <style>
         :root {
@@ -219,7 +221,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--blue-gradient);
+            background: var(--yellow-gradient);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -271,7 +273,7 @@
         .stats-card.blue::before { background: var(--blue-gradient); }
         .stats-card.green::before { background: var(--green-gradient); }
         .stats-card.yellow::before { background: var(--yellow-gradient); }
-        .stats-card.red::before { background: linear-gradient(135deg, var(--danger-red), #dc2626); }
+        .stats-card.orange::before { background: linear-gradient(135deg, var(--warning-orange), #d97706); }
 
         .stats-icon {
             width: 70px;
@@ -300,82 +302,66 @@
             background-clip: text;
         }
 
+        /* QR Code Display */
+        .qr-display {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
         /* Trust Level Badges */
         .trust-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         .trust-verified { background: var(--green-gradient); color: white; }
         .trust-premium { background: var(--blue-gradient); color: white; }
         .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
-        .trust-revoked { background: linear-gradient(135deg, var(--danger-red), #dc2626); color: white; }
+        .trust-pending { background: linear-gradient(135deg, var(--warning-orange), #d97706); color: white; }
 
-        /* Status Indicators */
-        .status-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            position: relative;
-        }
-
-        .status-indicator::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-active { background-color: var(--success-green); }
-        .status-active::before { background-color: var(--success-green); }
-
-        .status-expired { background-color: var(--warning-orange); }
-        .status-expired::before { background-color: var(--warning-orange); }
-
-        .status-revoked { background-color: var(--danger-red); }
-        .status-revoked::before { background-color: var(--danger-red); }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.3); opacity: 0.2; }
-            100% { transform: scale(1); opacity: 0.6; }
-        }
-
-        /* Activity Feed */
-        .activity-item {
-            padding: 1rem;
-            border-left: 3px solid transparent;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 1rem;
-            background: rgba(255, 255, 255, 0.5);
+        /* Form Styles */
+        .form-control-walmart {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--walmart-blue);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .activity-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateX(5px);
+        .form-control-walmart:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            background: white;
         }
 
-        .activity-item.verification { border-left-color: var(--success-green); }
-        .activity-item.warning { border-left-color: var(--warning-orange); }
-        .activity-item.error { border-left-color: var(--danger-red); }
-        .activity-item.info { border-left-color: var(--walmart-blue); }
+        .form-label-walmart {
+            font-weight: 600;
+            color: var(--walmart-dark-gray);
+            margin-bottom: 0.75rem;
+        }
 
         /* Button Styles */
         .btn-walmart {
@@ -383,15 +369,15 @@
             border: none;
             color: white;
             font-weight: 600;
-            padding: 0.75rem 2rem;
-            border-radius: 12px;
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.85rem;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 113, 206, 0.3);
         }
 
         .btn-walmart::before {
@@ -410,9 +396,74 @@
         }
 
         .btn-walmart:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(0, 113, 206, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 113, 206, 0.4);
             color: white;
+        }
+
+        .btn-walmart-yellow {
+            background: var(--yellow-gradient);
+            color: var(--walmart-blue);
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(255, 194, 32, 0.3);
+        }
+
+        .btn-walmart-yellow:hover {
+            box-shadow: 0 15px 35px rgba(255, 194, 32, 0.4);
+            color: var(--walmart-blue);
+        }
+
+        .btn-success {
+            background: var(--green-gradient);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-walmart {
+            height: 8px;
+            background: rgba(0, 113, 206, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-walmart {
+            background: var(--green-gradient);
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        /* Table Styles */
+        .table-walmart {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-walmart thead {
+            background: var(--blue-gradient);
+            color: white;
+        }
+
+        .table-walmart th,
+        .table-walmart td {
+            padding: 1rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .table-walmart tbody tr {
+            border-bottom: 1px solid rgba(0, 113, 206, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .table-walmart tbody tr:hover {
+            background: rgba(0, 113, 206, 0.05);
+            transform: scale(1.01);
         }
 
         /* Footer */
@@ -502,6 +553,11 @@
                 height: 60px;
                 font-size: 1.5rem;
             }
+
+            .btn-walmart {
+                padding: 0.75rem 2rem;
+                font-size: 0.85rem;
+            }
         }
 
         /* Custom Scrollbar */
@@ -514,12 +570,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--blue-gradient);
+            background: var(--yellow-gradient);
             border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--walmart-dark-blue);
+            background: var(--warning-orange);
         }
     </style>
 </head>
@@ -539,7 +595,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="home.html">
+                        <a class="nav-link" href="home.html">
                             <i class="fas fa-home me-2"></i>Home
                         </a>
                     </li>
@@ -549,7 +605,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="seller_portal.html">
+                        <a class="nav-link active" href="seller_portal.html">
                             <i class="fas fa-store me-2"></i>Seller Portal
                         </a>
                     </li>
@@ -561,10 +617,10 @@
                             <i class="fas fa-user me-2"></i>Account
                         </a>
                         <ul class="dropdown-menu glass-card">
-                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -575,23 +631,25 @@
     <!-- Main Content -->
     <main class="main-content" style="margin-top: 100px;">
         <div class="container">
-            <!-- Welcome Header -->
+            <!-- Header -->
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card-walmart p-4">
-                        <div class="d-flex align-items-center">
-                            <div style="background: var(--blue-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                                <i class="fas fa-home" style="font-size: 1.5rem; color: white;"></i>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div style="background: var(--yellow-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                                    <i class="fas fa-store" style="font-size: 1.5rem; color: var(--walmart-blue);"></i>
+                                </div>
+                                <div>
+                                    <h2 class="mb-1 fw-bold" style="background: var(--yellow-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                                        Seller Portal
+                                    </h2>
+                                    <p class="mb-0 text-muted">Manage your digital reputation and QR codes</p>
+                                </div>
                             </div>
                             <div>
-                                <h2 class="mb-1 fw-bold" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                                    Dashboard Overview
-                                </h2>
-                                <p class="mb-0 text-muted">Welcome back! Here's your DRP system overview.</p>
-                            </div>
-                            <div class="ms-auto">
                                 <span class="trust-badge trust-verified">
-                                    <i class="fas fa-shield-alt me-2"></i>Verified User
+                                    <i class="fas fa-shield-alt me-2"></i>Verified Seller
                                 </span>
                             </div>
                         </div>
@@ -606,207 +664,282 @@
                         <div class="stats-icon" style="background: var(--blue-gradient);">
                             <i class="fas fa-qrcode"></i>
                         </div>
-                        <div class="stats-number">1,247</div>
-                        <h6 class="fw-bold mb-2">QR Verifications</h6>
-                        <p class="text-muted mb-0">This month</p>
+                        <div class="stats-number">12</div>
+                        <h6 class="fw-bold mb-2">Active QR Codes</h6>
+                        <p class="text-muted mb-0">Currently in use</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="stats-card green">
                         <div class="stats-icon" style="background: var(--green-gradient);">
-                            <i class="fas fa-check-circle"></i>
+                            <i class="fas fa-eye"></i>
                         </div>
-                        <div class="stats-number">98.7%</div>
-                        <h6 class="fw-bold mb-2">Success Rate</h6>
-                        <p class="text-muted mb-0">Verification accuracy</p>
+                        <div class="stats-number">2,847</div>
+                        <h6 class="fw-bold mb-2">Total Scans</h6>
+                        <p class="text-muted mb-0">This month</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
                     <div class="stats-card yellow">
                         <div class="stats-icon" style="background: var(--yellow-gradient);">
-                            <i class="fas fa-store"></i>
+                            <i class="fas fa-star"></i>
                         </div>
-                        <div class="stats-number">8,432</div>
-                        <h6 class="fw-bold mb-2">Verified Sellers</h6>
-                        <p class="text-muted mb-0">Active in network</p>
+                        <div class="stats-number">4.8</div>
+                        <h6 class="fw-bold mb-2">Trust Rating</h6>
+                        <p class="text-muted mb-0">Out of 5.0</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stats-card red">
-                        <div class="stats-icon" style="background: linear-gradient(135deg, var(--danger-red), #dc2626);">
-                            <i class="fas fa-exclamation-triangle"></i>
+                    <div class="stats-card orange">
+                        <div class="stats-icon" style="background: linear-gradient(135deg, var(--warning-orange), #d97706);">
+                            <i class="fas fa-chart-line"></i>
                         </div>
-                        <div class="stats-number">23</div>
-                        <h6 class="fw-bold mb-2">Fraud Attempts</h6>
-                        <p class="text-muted mb-0">Blocked this week</p>
+                        <div class="stats-number">+24%</div>
+                        <h6 class="fw-bold mb-2">Growth</h6>
+                        <p class="text-muted mb-0">Since last month</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Dashboard Content -->
+            <!-- Main Content -->
             <div class="row">
-                <!-- Quick Actions -->
-                <div class="col-lg-4 mb-4">
-                    <div class="card-walmart p-4">
-                        <h5 class="fw-bold mb-4">
-                            <i class="fas fa-bolt me-2" style="color: var(--walmart-yellow);"></i>
-                            Quick Actions
-                        </h5>
-                        <div class="d-grid gap-3">
-                            <a href="verify.html" class="btn btn-walmart">
-                                <i class="fas fa-qrcode me-2"></i>Scan QR Code
-                            </a>
-                            <a href="seller_portal.html" class="btn btn-walmart">
-                                <i class="fas fa-store me-2"></i>Seller Dashboard
-                            </a>
-                            <button class="btn btn-walmart">
-                                <i class="fas fa-chart-bar me-2"></i>View Reports
-                            </button>
-                            <button class="btn btn-walmart">
-                                <i class="fas fa-cog me-2"></i>System Settings
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
+                <!-- QR Code Management -->
                 <div class="col-lg-8 mb-4">
-                    <div class="card-walmart p-4">
+                    <!-- Generate New QR Code -->
+                    <div class="card-walmart p-4 mb-4">
                         <h5 class="fw-bold mb-4">
-                            <i class="fas fa-clock me-2" style="color: var(--walmart-blue);"></i>
-                            Recent Activity
-                        </h5>
-                        <div style="max-height: 400px; overflow-y: auto;">
-                            <div class="activity-item verification">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-active"></span>
-                                            New Seller Verified
-                                        </h6>
-                                        <p class="mb-1 text-muted">TechMart Electronics has been successfully verified</p>
-                                        <small class="text-muted">2 minutes ago</small>
-                                    </div>
-                                    <span class="trust-badge trust-verified">Verified</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item info">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-active"></span>
-                                            QR Code Generated
-                                        </h6>
-                                        <p class="mb-1 text-muted">QR-7749 created for MegaStore Plus</p>
-                                        <small class="text-muted">15 minutes ago</small>
-                                    </div>
-                                    <span class="trust-badge trust-premium">Premium</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item warning">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-expired"></span>
-                                            Certification Expiring
-                                        </h6>
-                                        <p class="mb-1 text-muted">QuickShop's verification expires in 7 days</p>
-                                        <small class="text-muted">1 hour ago</small>
-                                    </div>
-                                    <span class="trust-badge trust-basic">Basic</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item error">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-revoked"></span>
-                                            Fraud Attempt Blocked
-                                        </h6>
-                                        <p class="mb-1 text-muted">Suspicious QR scan from IP: 192.168.1.xxx</p>
-                                        <small class="text-muted">3 hours ago</small>
-                                    </div>
-                                    <span class="trust-badge trust-revoked">Blocked</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item verification">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-active"></span>
-                                            Bulk Verification Complete
-                                        </h6>
-                                        <p class="mb-1 text-muted">157 sellers processed in batch verification</p>
-                                        <small class="text-muted">5 hours ago</small>
-                                    </div>
-                                    <span class="trust-badge trust-verified">Complete</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item info">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <h6 class="mb-1 fw-bold">
-                                            <span class="status-indicator status-active"></span>
-                                            System Update
-                                        </h6>
-                                        <p class="mb-1 text-muted">DRP System updated to version 2.1.3</p>
-                                        <small class="text-muted">Yesterday</small>
-                                    </div>
-                                    <span class="trust-badge trust-premium">System</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- System Status -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card-walmart p-4">
-                        <h5 class="fw-bold mb-4">
-                            <i class="fas fa-server me-2" style="color: var(--success-green);"></i>
-                            System Status
+                            <i class="fas fa-plus-circle me-2" style="color: var(--success-green);"></i>
+                            Generate New QR Code
                         </h5>
                         <div class="row">
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="status-indicator status-active"></span>
-                                    <div>
-                                        <h6 class="mb-0 fw-bold">QR Verification Service</h6>
-                                        <small class="text-muted">Operational</small>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Product/Service Name</label>
+                                    <input type="text" class="form-control form-control-walmart" id="product-name" placeholder="Enter product or service name">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Category</label>
+                                    <select class="form-control form-control-walmart" id="product-category">
+                                        <option>Electronics</option>
+                                        <option>Clothing</option>
+                                        <option>Home & Garden</option>
+                                        <option>Beauty & Health</option>
+                                        <option>Sports & Outdoors</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Description</label>
+                                    <textarea class="form-control form-control-walmart" id="product-description" rows="3" placeholder="Brief description of the product/service"></textarea>
+                                </div>
+                                <button class="btn btn-success" onclick="generateQR()">
+                                    <i class="fas fa-magic me-2"></i>Generate QR Code
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="qr-display" id="qr-display">
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-qrcode" style="font-size: 4rem; color: var(--walmart-blue); opacity: 0.3;"></i>
+                                        <p class="text-muted mt-3">QR code will appear here</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="status-indicator status-active"></span>
+                        </div>
+                    </div>
+
+                    <!-- QR Code List -->
+                    <div class="card-walmart p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-list me-2" style="color: var(--walmart-blue);"></i>
+                            Your QR Codes
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-walmart">
+                                <thead>
+                                    <tr>
+                                        <th>QR Code</th>
+                                        <th>Product/Service</th>
+                                        <th>Scans</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>QR-7749</strong></td>
+                                        <td>Premium Headphones</td>
+                                        <td>1,247</td>
+                                        <td><span class="trust-badge trust-verified" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-7749')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-7749')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-7749')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>QR-8832</strong></td>
+                                        <td>Wireless Charger</td>
+                                        <td>856</td>
+                                        <td><span class="trust-badge trust-verified" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-8832')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-8832')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-8832')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>QR-9441</strong></td>
+                                        <td>Smart Watch</td>
+                                        <td>744</td>
+                                        <td><span class="trust-badge trust-pending" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Pending</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-9441')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-9441')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-9441')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seller Profile & Analytics -->
+                <div class="col-lg-4">
+                    <!-- Seller Profile -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-user-circle me-2" style="color: var(--walmart-blue);"></i>
+                            Seller Profile
+                        </h5>
+                        <div class="text-center mb-4">
+                            <div style="width: 80px; height: 80px; background: var(--blue-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 2rem;">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h6 class="fw-bold">TechMart Electronics</h6>
+                            <p class="text-muted mb-2">Verified since Jan 2023</p>
+                            <span class="trust-badge trust-verified">
+                                <i class="fas fa-shield-alt me-2"></i>Verified Seller
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label-walmart">Trust Level Progress</label>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 85%"></div>
+                            </div>
+                            <small class="text-muted">85% - Premium Level</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-walmart">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </button>
+                            <button class="btn btn-walmart-yellow">
+                                <i class="fas fa-certificate me-2"></i>Upgrade to Premium
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Analytics -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-chart-bar me-2" style="color: var(--success-green);"></i>
+                            Quick Analytics
+                        </h6>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Weekly Scans</small>
+                                <small>724 (+12%)</small>
+                            </div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Trust Score</small>
+                                <small>4.8/5.0</small>
+                            </div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 96%"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Verification Rate</small>
+                                <small>98.2%</small>
+                            </div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 98%"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-walmart btn-sm w-100">
+                            <i class="fas fa-chart-line me-2"></i>View Full Report
+                        </button>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card-walmart p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-clock me-2" style="color: var(--warning-orange);"></i>
+                            Recent Activity
+                        </h6>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <div class="activity-item p-3 mb-3" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-green); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="mb-0 fw-bold">Database</h6>
-                                        <small class="text-muted">Operational</small>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">QR-7749 Scanned</h6>
+                                        <p class="mb-1 text-muted small">Premium Headphones verified</p>
+                                        <small class="text-muted">5 min ago</small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="status-indicator status-expired"></span>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(0, 113, 206, 0.1); border-left: 3px solid var(--walmart-blue); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="mb-0 fw-bold">Email Service</h6>
-                                        <small class="text-muted">Maintenance</small>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">New QR Generated</h6>
+                                        <p class="mb-1 text-muted small">QR-9441 for Smart Watch</p>
+                                        <small class="text-muted">2 hours ago</small>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-6 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="status-indicator status-active"></span>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning-orange); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="mb-0 fw-bold">API Gateway</h6>
-                                        <small class="text-muted">Operational</small>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Profile Updated</h6>
+                                        <p class="mb-1 text-muted small">Business information modified</p>
+                                        <small class="text-muted">1 day ago</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-green); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Trust Score Increased</h6>
+                                        <p class="mb-1 text-muted small">Rating improved to 4.8/5.0</p>
+                                        <small class="text-muted">2 days ago</small>
                                     </div>
                                 </div>
                             </div>
@@ -866,22 +999,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Get CSRF token for Django
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('mainNavbar');
@@ -892,392 +1009,219 @@
             }
         });
 
-        // Load real dashboard statistics from Django API
-        function loadDashboardStats() {
-            fetch('/api/drp/stats/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    updateStatsDisplay(data);
-                }
-            })
-            .catch(error => {
-                console.log('Using fallback stats due to:', error);
-                // Keep current mock data as fallback
-            });
-        }
+        // QR Code generation counter
+        let qrCounter = 1000;
 
-        // Load seller statistics
-        function loadSellerStats() {
-            fetch('/api/seller/stats/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    updateSellerStatsDisplay(data);
-                }
-            })
-            .catch(error => {
-                console.log('Using fallback seller stats due to:', error);
-            });
-        }
+        // Generate QR Code functionality
+        function generateQR() {
+            const productName = document.getElementById('product-name').value;
+            const category = document.getElementById('product-category').value;
+            const description = document.getElementById('product-description').value;
 
-        // Update stats display with real data
-        function updateStatsDisplay(data) {
-            const statsNumbers = document.querySelectorAll('.stats-number');
-            
-            if (statsNumbers[0] && data.recent_verifications !== undefined) {
-                statsNumbers[0].textContent = data.recent_verifications.toLocaleString();
+            if (!productName) {
+                showAlert('Please enter a product/service name', 'warning');
+                return;
             }
-            if (statsNumbers[1] && data.total_verifications && data.failed_verifications !== undefined) {
-                const successRate = data.total_verifications > 0 ? 
-                    ((data.total_verifications - data.failed_verifications) / data.total_verifications * 100) : 98.7;
-                statsNumbers[1].textContent = successRate.toFixed(1) + '%';
-            }
-            if (statsNumbers[3] && data.failed_verifications !== undefined) {
-                statsNumbers[3].textContent = data.failed_verifications;
-            }
-        }
 
-        // Update seller stats display
-        function updateSellerStatsDisplay(data) {
-            const statsNumbers = document.querySelectorAll('.stats-number');
+            // Generate unique QR code
+            qrCounter++;
+            const qrCode = `QR-${qrCounter}`;
             
-            if (statsNumbers[2] && data.verified_sellers !== undefined) {
-                statsNumbers[2].textContent = data.verified_sellers.toLocaleString();
-            }
-        }
-
-        // Load recent activity from Django API
-        function loadRecentActivity() {
-            fetch('/api/drp/recent-activity/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.activities) {
-                    updateActivityFeed(data.activities);
-                }
-            })
-            .catch(error => {
-                console.log('Using fallback activity data due to:', error);
-            });
-        }
-
-        // Update activity feed with real data
-        function updateActivityFeed(activities) {
-            const activityContainer = document.querySelector('.activity-item').parentNode;
-            
-            // Clear existing activities (keep first few as fallback)
-            const existingActivities = activityContainer.querySelectorAll('.activity-item');
-            if (activities.length > 0) {
-                // Remove all but keep structure
-                existingActivities.forEach((item, index) => {
-                    if (index > 0) item.remove();
-                });
-
-                // Add real activities
-                activities.slice(0, 6).forEach((activity, index) => {
-                    const activityElement = createActivityElement(activity);
-                    if (index === 0) {
-                        activityContainer.insertBefore(activityElement, activityContainer.firstChild);
-                    } else {
-                        activityContainer.appendChild(activityElement);
-                    }
-                });
-            }
-        }
-
-        // Create activity element from Django data
-        function createActivityElement(activity) {
-            const div = document.createElement('div');
-            div.className = `activity-item ${activity.type || 'info'}`;
-            
-            const statusClass = getStatusClass(activity.status);
-            const badgeClass = getBadgeClass(activity.trust_level || activity.status);
-            const badgeText = activity.badge_text || activity.status;
-            
-            div.innerHTML = `
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="mb-1 fw-bold">
-                            <span class="status-indicator ${statusClass}"></span>
-                            ${activity.title}
-                        </h6>
-                        <p class="mb-1 text-muted">${activity.description}</p>
-                        <small class="text-muted">${formatTimeAgo(activity.timestamp)}</small>
-                    </div>
-                    <span class="trust-badge ${badgeClass}">${badgeText}</span>
+            // Show loading
+            const qrDisplay = document.getElementById('qr-display');
+            qrDisplay.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="loading-spinner mx-auto mb-3" style="width: 40px; height: 40px; border-width: 3px;"></div>
+                    <p class="text-muted">Generating QR code...</p>
                 </div>
             `;
-            
-            return div;
-        }
 
-        // Helper functions for activity display
-        function getStatusClass(status) {
-            const statusMap = {
-                'SUCCESS': 'status-active',
-                'VERIFIED': 'status-active',
-                'ACTIVE': 'status-active',
-                'PENDING': 'status-expired',
-                'FLAGGED': 'status-revoked',
-                'FAILED': 'status-revoked'
-            };
-            return statusMap[status] || 'status-active';
-        }
+            // Simulate generation delay
+            setTimeout(() => {
+                // Clear the display and create QR code
+                qrDisplay.innerHTML = '';
+                
+                // Create QR code container
+                const qrContainer = document.createElement('div');
+                qrContainer.className = 'qr-code-container';
+                qrContainer.id = 'qr-code-canvas';
+                qrDisplay.appendChild(qrContainer);
 
-        function getBadgeClass(level) {
-            const badgeMap = {
-                'VERIFIED': 'trust-verified',
-                'GOLD': 'trust-verified',
-                'PREMIUM': 'trust-premium',
-                'BASIC': 'trust-basic',
-                'FLAGGED': 'trust-revoked',
-                'REVOKED': 'trust-revoked'
-            };
-            return badgeMap[level] || 'trust-premium';
-        }
-
-        function formatTimeAgo(timestamp) {
-            const now = new Date();
-            const time = new Date(timestamp);
-            const diffInMinutes = Math.floor((now - time) / (1000 * 60));
-            
-            if (diffInMinutes < 1) return 'Just now';
-            if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
-            if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`;
-            return `${Math.floor(diffInMinutes / 1440)} days ago`;
-        }
-
-        // Load system status from Django API
-        function loadSystemStatus() {
-            fetch('/api/drp/health-check/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateSystemStatus(data);
-            })
-            .catch(error => {
-                console.log('System status check failed:', error);
-            });
-        }
-
-        // Update system status indicators
-        function updateSystemStatus(data) {
-            const statusIndicators = document.querySelectorAll('.status-indicator');
-            
-            if (data.status === 'healthy') {
-                statusIndicators.forEach(indicator => {
-                    if (!indicator.classList.contains('status-expired')) {
-                        indicator.className = 'status-indicator status-active';
-                        const statusText = indicator.parentNode.querySelector('small');
-                        if (statusText && statusText.textContent !== 'Maintenance') {
-                            statusText.textContent = 'Operational';
-                        }
+                // Generate QR code
+                QRCode.toCanvas(qrContainer, qrCode, {
+                    width: 200,
+                    height: 200,
+                    colorDark: '#0071ce',
+                    colorLight: '#ffffff',
+                    margin: 2
+                }, function (error) {
+                    if (error) {
+                        console.error(error);
+                        showAlert('Error generating QR code', 'error');
+                        return;
                     }
+                    
+                    // Add QR code info
+                    const infoDiv = document.createElement('div');
+                    infoDiv.innerHTML = `
+                        <h6 class="fw-bold mb-2">${qrCode}</h6>
+                        <p class="text-muted mb-2">${productName}</p>
+                        <small class="text-muted">${category}</small>
+                        <div class="mt-3">
+                            <button class="btn btn-walmart btn-sm me-2" onclick="downloadQR('${qrCode}')">
+                                <i class="fas fa-download me-1"></i>Download
+                            </button>
+                            <button class="btn btn-walmart-yellow btn-sm" onclick="printQR('${qrCode}')">
+                                <i class="fas fa-print me-1"></i>Print
+                            </button>
+                        </div>
+                    `;
+                    qrDisplay.appendChild(infoDiv);
+
+                    // Add to table (in real app, this would save to database)
+                    addQRToTable(qrCode, productName, category, description);
+                    
+                    // Clear form
+                    document.getElementById('product-name').value = '';
+                    document.getElementById('product-description').value = '';
+                    
+                    showAlert(`QR code ${qrCode} generated successfully!`, 'success');
                 });
-            } else if (data.issues && data.issues.length > 0) {
-                // Handle specific issues
-                console.log('System issues detected:', data.issues);
+            }, 1500);
+        }
+
+        // Add QR to table
+        function addQRToTable(qrCode, productName, category, description) {
+            const tableBody = document.querySelector('.table-walmart tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><strong>${qrCode}</strong></td>
+                <td>${productName}</td>
+                <td>0</td>
+                <td><span class="trust-badge trust-pending" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Pending</span></td>
+                <td>
+                    <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('${qrCode}')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('${qrCode}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('${qrCode}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+        }
+
+        // QR Code actions
+        function viewQR(qrCode) {
+            showAlert(`Viewing details for ${qrCode}`, 'info');
+        }
+
+        function editQR(qrCode) {
+            showAlert(`Edit functionality for ${qrCode} - Coming soon!`, 'info');
+        }
+
+        function deleteQR(qrCode) {
+            if (confirm(`Are you sure you want to delete ${qrCode}?`)) {
+                // In real app, this would call API to delete
+                showAlert(`${qrCode} deleted successfully`, 'success');
+                // Remove from table
+                const row = event.target.closest('tr');
+                if (row) row.remove();
             }
         }
 
-        // Simulate real-time updates for stats (keep existing behavior)
+        function downloadQR(qrCode) {
+            const canvas = document.querySelector('#qr-code-canvas canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = `${qrCode}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                showAlert(`${qrCode} downloaded successfully`, 'success');
+            }
+        }
+
+        function printQR(qrCode) {
+            const printWindow = window.open('', '_blank');
+            const canvas = document.querySelector('#qr-code-canvas canvas');
+            if (canvas) {
+                printWindow.document.write(`
+                    <html>
+                        <head><title>Print ${qrCode}</title></head>
+                        <body style="text-align: center; font-family: Arial, sans-serif;">
+                            <h2>${qrCode}</h2>
+                            <img src="${canvas.toDataURL()}" style="max-width: 300px;">
+                            <p>Generated by Walmart DRP System</p>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            }
+        }
+
+        // Update stats dynamically
         function updateStats() {
             const statsNumbers = document.querySelectorAll('.stats-number');
             statsNumbers.forEach(stat => {
                 if (stat.textContent.includes('%')) {
                     // For percentage values, slight variations
+                    const currentValue = parseFloat(stat.textContent.replace('%', ''));
+                    const variation = (Math.random() - 0.5) * 2;
+                    const newValue = Math.max(0, Math.min(100, currentValue + variation));
+                    stat.textContent = newValue >= 0 ? `+${newValue.toFixed(0)}%` : `${newValue.toFixed(0)}%`;
+                } else if (stat.textContent.includes('.')) {
+                    // For decimal values (ratings)
                     const currentValue = parseFloat(stat.textContent);
-                    const variation = (Math.random() - 0.5) * 0.2;
-                    const newValue = Math.max(95, Math.min(100, currentValue + variation));
-                    stat.textContent = newValue.toFixed(1) + '%';
-                } else if (!stat.textContent.includes(',')) {
-                    // For small numbers, small variations
+                    const variation = (Math.random() - 0.5) * 0.1;
+                    const newValue = Math.max(1, Math.min(5, currentValue + variation));
+                    stat.textContent = newValue.toFixed(1);
+                } else if (!stat.textContent.includes(',') && parseInt(stat.textContent) < 100) {
+                    // For small integers
                     const currentValue = parseInt(stat.textContent);
-                    const variation = Math.floor((Math.random() - 0.5) * 6);
+                    const variation = Math.floor((Math.random() - 0.5) * 2);
                     stat.textContent = Math.max(0, currentValue + variation);
-                } else {
+                } else if (stat.textContent.includes(',')) {
                     // For large numbers with commas
                     const currentValue = parseInt(stat.textContent.replace(',', ''));
-                    const variation = Math.floor((Math.random() - 0.5) * 50);
+                    const variation = Math.floor((Math.random() - 0.5) * 20);
                     const newValue = Math.max(0, currentValue + variation);
                     stat.textContent = newValue.toLocaleString();
                 }
             });
         }
 
-        // Add new activity items periodically (enhanced with Django data)
-        function addRecentActivity() {
-            // Try to get real-time updates
-            fetch('/api/drp/latest-activity/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.activity) {
-                    addActivityToFeed(data.activity);
-                }
-            })
-            .catch(error => {
-                // Fallback to mock activity
-                addMockActivity();
-            });
-        }
+        // Update stats every 45 seconds
+        setInterval(updateStats, 45000);
 
-        function addActivityToFeed(activity) {
-            const activityContainer = document.querySelector('.activity-item').parentNode;
-            const newActivity = createActivityElement(activity);
+        // Show alert function
+        function showAlert(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'warning' ? 'alert-warning' : 
+                              type === 'info' ? 'alert-info' : 'alert-danger';
             
-            // Add to top of activity list
-            activityContainer.insertBefore(newActivity, activityContainer.firstChild);
-
-            // Remove last item if more than 8 activities
-            const activities_list = activityContainer.querySelectorAll('.activity-item');
-            if (activities_list.length > 8) {
-                activityContainer.removeChild(activities_list[activities_list.length - 1]);
-            }
-
-            // Add entrance animation
-            newActivity.style.opacity = '0';
-            newActivity.style.transform = 'translateX(-20px)';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
             setTimeout(() => {
-                newActivity.style.transition = 'all 0.6s ease';
-                newActivity.style.opacity = '1';
-                newActivity.style.transform = 'translateX(0)';
-            }, 100);
-        }
-
-        function addMockActivity() {
-            const activities = [
-                {
-                    type: 'verification',
-                    status: 'VERIFIED',
-                    title: 'Seller Verification Complete',
-                    description: 'New seller "Digital World" has been verified',
-                    badge_text: 'Verified',
-                    timestamp: new Date().toISOString()
-                },
-                {
-                    type: 'info',
-                    status: 'ACTIVE',
-                    title: 'QR Code Scan',
-                    description: 'QR-8832 scanned successfully',
-                    trust_level: 'PREMIUM',
-                    badge_text: 'Premium',
-                    timestamp: new Date(Date.now() - 60000).toISOString()
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
                 }
-            ];
-
-            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
-            addActivityToFeed(randomActivity);
+            }, 5000);
         }
 
-        // Update stats every 30 seconds
-        setInterval(updateStats, 30000);
-
-        // Add new activity every 2 minutes
-        setInterval(addRecentActivity, 120000);
-
-        // Load real data every 5 minutes
-        setInterval(() => {
-            loadDashboardStats();
-            loadSellerStats();
-            loadSystemStatus();
-        }, 300000);
-
-        // System status checker
-        function updateSystemStatus() {
-            const statusItems = document.querySelectorAll('.status-indicator');
-            statusItems.forEach(indicator => {
-                // 95% chance to stay operational, 5% chance to show maintenance
-                if (Math.random() < 0.05) {
-                    indicator.className = 'status-indicator status-expired';
-                    indicator.parentNode.querySelector('small').textContent = 'Maintenance';
-                } else {
-                    indicator.className = 'status-indicator status-active';
-                    indicator.parentNode.querySelector('small').textContent = 'Operational';
-                }
-            });
-        }
-
-        // Update system status every 5 minutes
-        setInterval(updateSystemStatus, 300000);
-
-        // Click handlers for quick actions
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.btn-walmart') && e.target.textContent.includes('View Reports')) {
-                e.preventDefault();
-                // Redirect to Django reports view
-                window.location.href = '/admin/reports/';
-            }
-            
-            if (e.target.closest('.btn-walmart') && e.target.textContent.includes('System Settings')) {
-                e.preventDefault();
-                // Redirect to Django admin settings
-                window.location.href = '/admin/settings/';
-            }
-        });
-
-        // Logout confirmation function
-        function confirmLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Call Django logout endpoint
-                fetch('/api/auth/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/login/';
-                    } else {
-                        // Fallback logout
-                        window.location.href = '/logout/';
-                    }
-                })
-                .catch(error => {
-                    console.error('Logout error:', error);
-                    // Fallback logout
-                    window.location.href = '/logout/';
-                });
-            }
-        }
-
-        // Add entrance animations on page load
+        // Add entrance animations
         document.addEventListener('DOMContentLoaded', function() {
-            // Load real data on page load
-            loadDashboardStats();
-            loadSellerStats();
-            loadRecentActivity();
-            loadSystemStatus();
-
             const cards = document.querySelectorAll('.card-walmart, .stats-card');
             cards.forEach((card, index) => {
                 card.style.opacity = '0';
@@ -1289,20 +1233,29 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 100);
             });
-
-            // Animate activity items
-            const activityItems = document.querySelectorAll('.activity-item');
-            activityItems.forEach((item, index) => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateX(-20px)';
-                
-                setTimeout(() => {
-                    item.style.transition = 'all 0.4s ease';
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateX(0)';
-                }, 800 + (index * 100));
-            });
         });
+
+        // Loading spinner for stats cards
+        const loadingSpinner = `
+            <div class="loading-spinner" style="width: 30px; height: 30px; border-width: 2px; margin: 10px auto;"></div>
+        `;
+
+        // Add CSS for loading spinner
+        const style = document.createElement('style');
+        style.textContent = `
+            .loading-spinner {
+                border: 3px solid rgba(255, 194, 32, 0.2);
+                border-top: 3px solid var(--walmart-yellow);
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
