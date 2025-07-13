@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify QR Code - Walmart DRP</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code Scanner -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --walmart-blue: #0071ce;
+            --walmart-yellow: #ffc220;
+            --walmart-dark-blue: #004c91;
+            --walmart-light-blue: #e6f3ff;
+            --walmart-gray: #f8fafc;
+            --walmart-dark-gray: #2d3748;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --blue-gradient: linear-gradient(135deg, #0071ce 0%, #004c91 100%);
+            --yellow-gradient: linear-gradient(135deg, #ffc220 0%, #f59e0b 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            color: var(--walmart-dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 194, 32, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 113, 206, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+
+        /* Glass Morphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.37),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* Header Styles */
+        .navbar-walmart {
+            background: rgba(0, 113, 206, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar-walmart.scrolled {
+            background: rgba(0, 113, 206, 0.95);
+            padding: 0.5rem 0;
+            box-shadow: 0 8px 32px rgba(0, 113, 206, 0.3);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .walmart-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--yellow-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 800;
+            color: var(--walmart-blue);
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(255, 194, 32, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .walmart-logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .walmart-logo:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 12px;
+            margin: 0 0.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            color: white !important;
+        }
+
+        .nav-link.active {
+            background: var(--yellow-gradient);
+            color: var(--walmart-blue) !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 194, 32, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 160px);
+            padding: 2rem 0;
+        }
+
+        /* Enhanced Cards */
+        .card-walmart {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--green-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card-walmart:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .card-walmart:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* QR Scanner Styles */
+        .scanner-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .scanner-area {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #qr-reader {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid var(--success-green);
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .scanner-overlay::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            border-top: 4px solid var(--success-green);
+            border-left: 4px solid var(--success-green);
+            animation: scannerPulse 2s ease-in-out infinite;
+        }
+
+        .scanner-overlay::after {
+            content: '';
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            border-bottom: 4px solid var(--success-green);
+            border-right: 4px solid var(--success-green);
+            animation: scannerPulse 2s ease-in-out infinite 1s;
+        }
+
+        @keyframes scannerPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .manual-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--walmart-blue);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .manual-input:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Button Styles */
+        .btn-walmart {
+            background: var(--blue-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 113, 206, 0.3);
+        }
+
+        .btn-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-walmart:hover::before {
+            left: 100%;
+        }
+
+        .btn-walmart:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 113, 206, 0.4);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--green-gradient);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Verification Result Styles */
+        .verification-result {
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .verification-result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .verification-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+            color: white;
+            border: 2px solid var(--success-green);
+        }
+
+        .verification-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9));
+            color: white;
+            border: 2px solid var(--warning-orange);
+        }
+
+        .verification-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+            color: white;
+            border: 2px solid var(--danger-red);
+        }
+
+        .result-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Trust Badge Styles */
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            margin-top: 1rem;
+        }
+
+        .trust-verified { background: var(--green-gradient); color: white; }
+        .trust-premium { background: var(--blue-gradient); color: white; }
+        .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
+        .trust-revoked { background: linear-gradient(135deg, var(--danger-red), #dc2626); color: white; }
+
+        /* Loading Animation */
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(16, 185, 129, 0.2);
+            border-top: 4px solid var(--success-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer-walmart {
+            background: linear-gradient(135deg, var(--walmart-dark-blue), #1a365d);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 194, 32, 0.8), transparent);
+        }
+
+        .footer-section h6 {
+            color: var(--walmart-yellow);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            padding-left: 0;
+        }
+
+        .footer-link::before {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 2px;
+            background: var(--walmart-yellow);
+            transition: width 0.3s ease;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .footer-link:hover {
+            color: var(--walmart-yellow);
+            transform: translateX(5px);
+        }
+
+        .footer-link:hover::before {
+            width: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            
+            .walmart-logo {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .main-content {
+                padding: 1rem 0;
+            }
+
+            .scanner-container {
+                padding: 1.5rem;
+            }
+
+            .scanner-area {
+                max-width: 300px;
+            }
+
+            .btn-walmart {
+                padding: 0.75rem 2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--green-gradient);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--success-green);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-walmart fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="base.html">
+                <div class="walmart-logo">W</div>
+                Walmart DRP
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span style="color: white;"><i class="fas fa-bars"></i></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="verify.html">
+                            <i class="fas fa-qrcode me-2"></i>Verify QR
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="seller_portal.html">
+                            <i class="fas fa-store me-2"></i>Seller Portal
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-2"></i>Account
+                        </a>
+                        <ul class="dropdown-menu glass-card">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" style="margin-top: 100px;">
+        <div class="container">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card-walmart p-4">
+                        <div class="d-flex align-items-center">
+                            <div style="background: var(--green-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                                <i class="fas fa-qrcode" style="font-size: 1.5rem; color: white;"></i>
+                            </div>
+                            <div>
+                                <h2 class="mb-1 fw-bold" style="background: var(--green-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                                    QR Code Verification
+                                </h2>
+                                <p class="mb-0 text-muted">Scan or enter QR code to verify seller authenticity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scanner Section -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="scanner-container">
+                        <h4 class="fw-bold mb-4">
+                            <i class="fas fa-camera me-2" style="color: var(--success-green);"></i>
+                            Camera Scanner
+                        </h4>
+                        
+                        <div class="scanner-area" id="scanner-area">
+                            <div id="qr-reader"></div>
+                            <div class="scanner-overlay"></div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 justify-content-center">
+                            <button id="start-scan" class="btn btn-success">
+                                <i class="fas fa-camera me-2"></i>Start Scanner
+                            </button>
+                            <button id="stop-scan" class="btn btn-walmart" style="display: none;">
+                                <i class="fas fa-stop me-2"></i>Stop Scanner
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-muted mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Position the QR code within the scanning area
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Manual Input Section -->
+                    <div class="card-walmart p-4 mt-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-keyboard me-2" style="color: var(--walmart-blue);"></i>
+                            Manual Entry
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="text" 
+                                       class="manual-input" 
+                                       id="manual-qr-input" 
+                                       placeholder="Enter QR code manually (e.g., QR-7749, QR-8832)"
+                                       maxlength="20">
+                            </div>
+                            <div class="col-md-4">
+                                <button id="verify-manual" class="btn btn-walmart w-100">
+                                    <i class="fas fa-search me-2"></i>Verify Code
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Tip: QR codes typically start with "QR-" followed by numbers
+                        </small>
+                    </div>
+
+                    <!-- Verification Result -->
+                    <div id="verification-result" class="verification-result">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Recent Scans Sidebar -->
+                <div class="col-lg-4">
+                    <div class="card-walmart p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-history me-2" style="color: var(--walmart-yellow);"></i>
+                            Recent Scans
+                        </h5>
+                        
+                        <div id="recent-scans">
+                            <div class="recent-scan-item p-3 mb-3" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-green); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">QR-7749</h6>
+                                        <p class="mb-1 text-muted small">TechMart Electronics</p>
+                                        <small class="text-muted">2 min ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-verified" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">
+                                        <i class="fas fa-check me-1"></i>Verified
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="recent-scan-item p-3 mb-3" style="background: rgba(0, 113, 206, 0.1); border-left: 3px solid var(--walmart-blue); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">QR-8832</h6>
+                                        <p class="mb-1 text-muted small">MegaStore Plus</p>
+                                        <small class="text-muted">15 min ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-premium" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">
+                                        <i class="fas fa-star me-1"></i>Premium
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="recent-scan-item p-3 mb-3" style="background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning-orange); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">QR-9441</h6>
+                                        <p class="mb-1 text-muted small">QuickShop</p>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-basic" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">
+                                        <i class="fas fa-clock me-1"></i>Basic
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="recent-scan-item p-3 mb-3" style="background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--danger-red); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">QR-0000</h6>
+                                        <p class="mb-1 text-muted small">Unknown Seller</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-revoked" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">
+                                        <i class="fas fa-times me-1"></i>Invalid
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-walmart btn-sm">
+                                <i class="fas fa-list me-2"></i>View All Scans
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Security Tips -->
+                    <div class="card-walmart p-4 mt-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-shield-alt me-2" style="color: var(--success-green);"></i>
+                            Security Tips
+                        </h6>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle me-2" style="color: var(--success-green);"></i>
+                                <small>Always verify QR codes before purchasing</small>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-exclamation-triangle me-2" style="color: var(--warning-orange);"></i>
+                                <small>Report suspicious or invalid codes</small>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-eye me-2" style="color: var(--walmart-blue);"></i>
+                                <small>Look for trust badges and verification levels</small>
+                            </li>
+                            <li class="mb-0">
+                                <i class="fas fa-ban me-2" style="color: var(--danger-red);"></i>
+                                <small>Avoid sellers without proper verification</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-walmart">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-shield-alt me-2"></i>Digital Reputation</h6>
+                    <a href="#" class="footer-link">How It Works</a>
+                    <a href="#" class="footer-link">Verification Process</a>
+                    <a href="#" class="footer-link">Trust Levels</a>
+                    <a href="#" class="footer-link">Security</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-store me-2"></i>For Sellers</h6>
+                    <a href="#" class="footer-link">Get Verified</a>
+                    <a href="#" class="footer-link">Seller Dashboard</a>
+                    <a href="#" class="footer-link">Badge Management</a>
+                    <a href="#" class="footer-link">Analytics</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-users me-2"></i>For Customers</h6>
+                    <a href="#" class="footer-link">Verify Sellers</a>
+                    <a href="#" class="footer-link">QR Scanner</a>
+                    <a href="#" class="footer-link">Report Fraud</a>
+                    <a href="#" class="footer-link">Safety Tips</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-headset me-2"></i>Support</h6>
+                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="#" class="footer-link">Contact Us</a>
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 2rem 0 1rem;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.8);">&copy; 2025 Walmart Inc. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.8);">Powered by Walmart DRP System v2.0</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // QR Scanner functionality
+        let html5QrcodeScanner = null;
+        let isScanning = false;
+
+        // Mock seller database
+        const sellerDatabase = {
+            'QR-7749': {
+                name: 'TechMart Electronics',
+                status: 'verified',
+                trustLevel: 'Verified',
+                rating: 4.8,
+                verifiedSince: '2023-01-15',
+                location: 'New York, NY',
+                products: 'Electronics, Gadgets, Accessories'
+            },
+            'QR-8832': {
+                name: 'MegaStore Plus',
+                status: 'premium',
+                trustLevel: 'Premium',
+                rating: 4.9,
+                verifiedSince: '2022-08-10',
+                location: 'Los Angeles, CA',
+                products: 'General Merchandise, Home & Garden'
+            },
+            'QR-9441': {
+                name: 'QuickShop',
+                status: 'basic',
+                trustLevel: 'Basic',
+                rating: 4.2,
+                verifiedSince: '2024-06-20',
+                location: 'Chicago, IL',
+                products: 'Fashion, Beauty, Health'
+            },
+            'QR-0000': {
+                name: 'Unknown Seller',
+                status: 'invalid',
+                trustLevel: 'Invalid',
+                rating: 0,
+                verifiedSince: null,
+                location: 'Unknown',
+                products: 'Unknown'
+            }
+        };
+
+        // Start QR Scanner
+        document.getElementById('start-scan').addEventListener('click', function() {
+            if (!isScanning) {
+                startScanner();
+            }
+        });
+
+        // Stop QR Scanner
+        document.getElementById('stop-scan').addEventListener('click', function() {
+            if (isScanning) {
+                stopScanner();
+            }
+        });
+
+        // Manual verification
+        document.getElementById('verify-manual').addEventListener('click', function() {
+            const qrCode = document.getElementById('manual-qr-input').value.trim();
+            if (qrCode) {
+                verifyQRCode(qrCode);
+            } else {
+                showAlert('Please enter a QR code', 'warning');
+            }
+        });
+
+        // Enter key for manual input
+        document.getElementById('manual-qr-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('verify-manual').click();
+            }
+        });
+
+        function startScanner() {
+            html5QrcodeScanner = new Html5Qrcode("qr-reader");
+            
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 }
+                },
+                (decodedText, decodedResult) => {
+                    verifyQRCode(decodedText);
+                    stopScanner();
+                },
+                (errorMessage) => {
+                    // Handle scan errors silently
+                }
+            ).then(() => {
+                isScanning = true;
+                document.getElementById('start-scan').style.display = 'none';
+                document.getElementById('stop-scan').style.display = 'inline-block';
+            }).catch((err) => {
+                console.error('Camera start error:', err);
+                showAlert('Unable to access camera. Please check permissions.', 'error');
+            });
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner && isScanning) {
+                html5QrcodeScanner.stop().then(() => {
+                    isScanning = false;
+                    document.getElementById('start-scan').style.display = 'inline-block';
+                    document.getElementById('stop-scan').style.display = 'none';
+                });
+            }
+        }
+
+        function verifyQRCode(qrCode) {
+            // Show loading
+            showLoadingResult();
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                const seller = sellerDatabase[qrCode];
+                if (seller) {
+                    showVerificationResult(qrCode, seller);
+                    addToRecentScans(qrCode, seller);
+                } else {
+                    showVerificationResult(qrCode, {
+                        name: 'Unknown Seller',
+                        status: 'invalid',
+                        trustLevel: 'Invalid',
+                        rating: 0,
+                        verifiedSince: null,
+                        location: 'Unknown',
+                        products: 'Unknown'
+                    });
+                }
+                
+                // Clear manual input
+                document.getElementById('manual-qr-input').value = '';
+            }, 1500);
+        }
+
+        function showLoadingResult() {
+            const resultDiv = document.getElementById('verification-result');
+            resultDiv.innerHTML = `
+                <div class="text-center">
+                    <div class="loading-spinner"></div>
+                    <h5 class="mt-3">Verifying QR Code...</h5>
+                    <p class="text-muted">Please wait while we check the seller information</p>
+                </div>
+            `;
+            resultDiv.className = 'verification-result show';
+        }
+
+        function showVerificationResult(qrCode, seller) {
+            const resultDiv = document.getElementById('verification-result');
+            let resultClass, iconClass, statusText;
+            
+            switch(seller.status) {
+                case 'verified':
+                    resultClass = 'verification-success';
+                    iconClass = 'fas fa-check-circle';
+                    statusText = 'Seller Verified Successfully!';
+                    break;
+                case 'premium':
+                    resultClass = 'verification-success';
+                    iconClass = 'fas fa-star';
+                    statusText = 'Premium Seller Verified!';
+                    break;
+                case 'basic':
+                    resultClass = 'verification-warning';
+                    iconClass = 'fas fa-exclamation-triangle';
+                    statusText = 'Basic Verification - Proceed with Caution';
+                    break;
+                default:
+                    resultClass = 'verification-error';
+                    iconClass = 'fas fa-times-circle';
+                    statusText = 'Invalid or Unknown QR Code';
+            }
+
+            const ratingStars = seller.rating > 0 ? 
+                '★'.repeat(Math.floor(seller.rating)) + '☆'.repeat(5 - Math.floor(seller.rating)) : 
+                'No rating available';
+
+            resultDiv.innerHTML = `
+                <div class="${resultClass}">
+                    <div class="result-icon">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <h4 class="fw-bold mb-3">${statusText}</h4>
+                    <div class="row text-start">
+                        <div class="col-md-6">
+                            <h6><strong>QR Code:</strong> ${qrCode}</h6>
+                            <h6><strong>Seller Name:</strong> ${seller.name}</h6>
+                            <h6><strong>Trust Level:</strong> 
+                                <span class="trust-badge trust-${seller.status}">${seller.trustLevel}</span>
+                            </h6>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><strong>Rating:</strong> ${ratingStars} (${seller.rating}/5)</h6>
+                            <h6><strong>Location:</strong> ${seller.location}</h6>
+                            <h6><strong>Verified Since:</strong> ${seller.verifiedSince || 'Not verified'}</h6>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <h6><strong>Products:</strong> ${seller.products}</h6>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-walmart me-2" onclick="printResult()">
+                            <i class="fas fa-print me-2"></i>Print Result
+                        </button>
+                        <button class="btn btn-walmart" onclick="reportSeller('${qrCode}')">
+                            <i class="fas fa-flag me-2"></i>Report Issue
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.className = `verification-result ${resultClass} show`;
+        }
+
+        function addToRecentScans(qrCode, seller) {
+            // This would typically save to localStorage or send to server
+            console.log('Added to recent scans:', qrCode, seller);
+        }
+
+        function printResult() {
+            window.print();
+        }
+
+        function reportSeller(qrCode) {
+            showAlert(`Report submitted for QR code: ${qrCode}`, 'success');
+        }
+
+        function showAlert(message, type) {
+            // Create a simple alert (you could use a modal or toast instead)
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-danger';
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        // Add entrance animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-walmart, .scanner-container');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

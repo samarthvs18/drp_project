@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Walmart DRP</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --walmart-blue: #0071ce;
+            --walmart-yellow: #ffc220;
+            --walmart-dark-blue: #004c91;
+            --walmart-light-blue: #e6f3ff;
+            --walmart-gray: #f8fafc;
+            --walmart-dark-gray: #2d3748;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --blue-gradient: linear-gradient(135deg, #0071ce 0%, #004c91 100%);
+            --yellow-gradient: linear-gradient(135deg, #ffc220 0%, #f59e0b 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            color: var(--walmart-dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 194, 32, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 113, 206, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+
+        /* Glass Morphism Effect */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(31, 38, 135, 0.37),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* Header Styles */
+        .navbar-walmart {
+            background: rgba(0, 113, 206, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .navbar-walmart.scrolled {
+            background: rgba(0, 113, 206, 0.95);
+            padding: 0.5rem 0;
+            box-shadow: 0 8px 32px rgba(0, 113, 206, 0.3);
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+        .walmart-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--yellow-gradient);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: 800;
+            color: var(--walmart-blue);
+            font-size: 1.5rem;
+            box-shadow: 0 8px 25px rgba(255, 194, 32, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .walmart-logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .walmart-logo:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem !important;
+            border-radius: 12px;
+            margin: 0 0.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            color: white !important;
+        }
+
+        .nav-link.active {
+            background: var(--yellow-gradient);
+            color: var(--walmart-blue) !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 194, 32, 0.4);
+        }
+
+        /* Main Content */
+        .main-content {
+            min-height: calc(100vh - 160px);
+            padding: 2rem 0;
+        }
+
+        /* Enhanced Cards */
+        .card-walmart {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--warning-orange);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card-walmart:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset;
+        }
+
+        .card-walmart:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Form Styles */
+        .form-control-walmart {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--walmart-blue);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-walmart:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            background: white;
+        }
+
+        .form-label-walmart {
+            font-weight: 600;
+            color: var(--walmart-dark-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        /* Custom Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: var(--success-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Button Styles */
+        .btn-walmart {
+            background: var(--blue-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 113, 206, 0.3);
+        }
+
+        .btn-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-walmart:hover::before {
+            left: 100%;
+        }
+
+        .btn-walmart:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 113, 206, 0.4);
+            color: white;
+        }
+
+        .btn-walmart-yellow {
+            background: var(--yellow-gradient);
+            color: var(--walmart-blue);
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(255, 194, 32, 0.3);
+        }
+
+        .btn-walmart-yellow:hover {
+            box-shadow: 0 15px 35px rgba(255, 194, 32, 0.4);
+            color: var(--walmart-blue);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-red), #dc2626);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Settings Group */
+        .settings-group {
+            border-bottom: 1px solid rgba(0, 113, 206, 0.1);
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .settings-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .settings-item:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateX(5px);
+        }
+
+        .settings-item:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer */
+        .footer-walmart {
+            background: linear-gradient(135deg, var(--walmart-dark-blue), #1a365d);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-walmart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 194, 32, 0.8), transparent);
+        }
+
+        .footer-section h6 {
+            color: var(--walmart-yellow);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.75rem;
+            transition: all 0.3s ease;
+            padding-left: 0;
+        }
+
+        .footer-link::before {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 2px;
+            background: var(--walmart-yellow);
+            transition: width 0.3s ease;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .footer-link:hover {
+            color: var(--walmart-yellow);
+            transform: translateX(5px);
+        }
+
+        .footer-link:hover::before {
+            width: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+            
+            .walmart-logo {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .main-content {
+                padding: 1rem 0;
+            }
+
+            .btn-walmart {
+                padding: 0.75rem 2rem;
+                font-size: 0.85rem;
+            }
+
+            .settings-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--warning-orange);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--danger-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-walmart fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="base.html">
+                <div class="walmart-logo">W</div>
+                Walmart DRP
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span style="color: white;"><i class="fas fa-bars"></i></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="verify.html">
+                            <i class="fas fa-qrcode me-2"></i>Verify QR
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="seller_portal.html">
+                            <i class="fas fa-store me-2"></i>Seller Portal
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-2"></i>Account
+                        </a>
+                        <ul class="dropdown-menu glass-card">
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" style="margin-top: 100px;">
+        <div class="container">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card-walmart p-4">
+                        <div class="d-flex align-items-center">
+                            <div style="background: var(--warning-orange); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                                <i class="fas fa-cog" style="font-size: 1.5rem; color: white;"></i>
+                            </div>
+                            <div>
+                                <h2 class="mb-1 fw-bold" style="background: linear-gradient(135deg, var(--warning-orange), #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                                    System Settings
+                                </h2>
+                                <p class="mb-0 text-muted">Customize your DRP system preferences and configurations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Main Settings -->
+                <div class="col-lg-8 mb-4">
+                    <!-- Notification Settings -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-bell me-2" style="color: var(--success-green);"></i>
+                            Notification Preferences
+                        </h5>
+                        
+                        <div class="settings-group">
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Email Notifications</h6>
+                                    <p class="text-muted mb-0 small">Receive email alerts for important DRP activities</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="emailNotifications" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">SMS Alerts</h6>
+                                    <p class="text-muted mb-0 small">Get text messages for urgent security alerts</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="smsAlerts">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Browser Push Notifications</h6>
+                                    <p class="text-muted mb-0 small">Real-time notifications in your browser</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="pushNotifications" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Weekly Summary Report</h6>
+                                    <p class="text-muted mb-0 small">Receive weekly activity summaries via email</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="weeklyReport" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-shield-alt me-2" style="color: var(--danger-red);"></i>
+                            Security & Privacy
+                        </h5>
+                        
+                        <div class="settings-group">
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Two-Factor Authentication</h6>
+                                    <p class="text-muted mb-0 small">Add an extra layer of security to your account</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="twoFactor" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Session Timeout</h6>
+                                    <p class="text-muted mb-0 small">Automatically log out after inactivity</p>
+                                </div>
+                                <select class="form-control form-control-walmart" id="sessionTimeout" style="width: 150px;">
+                                    <option value="15">15 minutes</option>
+                                    <option value="30" selected>30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="120">2 hours</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Login Alerts</h6>
+                                    <p class="text-muted mb-0 small">Get notified of new login attempts</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="loginAlerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Data Export</h6>
+                                    <p class="text-muted mb-0 small">Download your personal data and activity logs</p>
+                                </div>
+                                <button class="btn btn-walmart-yellow btn-sm" onclick="exportData()">
+                                    <i class="fas fa-download me-2"></i>Export Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DRP Settings -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-qrcode me-2" style="color: var(--walmart-blue);"></i>
+                            DRP Configuration
+                        </h5>
+                        
+                        <div class="settings-group">
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Default QR Validity</h6>
+                                    <p class="text-muted mb-0 small">Default expiration time for new QR codes</p>
+                                </div>
+                                <select class="form-control form-control-walmart" id="defaultValidity" style="width: 150px;">
+                                    <option value="5">5 minutes</option>
+                                    <option value="10" selected>10 minutes</option>
+                                    <option value="15">15 minutes</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Auto-Refresh QR Codes</h6>
+                                    <p class="text-muted mb-0 small">Automatically generate new QR codes before expiration</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="autoRefresh">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">QR Code Format</h6>
+                                    <p class="text-muted mb-0 small">Choose the default format for QR code generation</p>
+                                </div>
+                                <select class="form-control form-control-walmart" id="qrFormat" style="width: 150px;">
+                                    <option value="png" selected>PNG</option>
+                                    <option value="jpg">JPG</option>
+                                    <option value="svg">SVG</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Bulk Operations</h6>
+                                    <p class="text-muted mb-0 small">Enable bulk QR code generation and management</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="bulkOperations" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interface Settings -->
+                    <div class="card-walmart p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-palette me-2" style="color: var(--walmart-yellow);"></i>
+                            Interface Preferences
+                        </h5>
+                        
+                        <div class="settings-group">
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Theme</h6>
+                                    <p class="text-muted mb-0 small">Choose your preferred interface theme</p>
+                                </div>
+                                <select class="form-control form-control-walmart" id="theme" style="width: 150px;">
+                                    <option value="light" selected>Light</option>
+                                    <option value="dark">Dark</option>
+                                    <option value="auto">Auto</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Layout</h6>
+                                    <p class="text-muted mb-0 small">Select your dashboard layout style</p>
+                                </div>
+                                <select class="form-control form-control-walmart" id="layout" style="width: 150px;">
+                                    <option value="default" selected>Default</option>
+                                    <option value="compact">Compact</option>
+                                    <option value="expanded">Expanded</option>
+                                </select>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Animations</h6>
+                                    <p class="text-muted mb-0 small">Enable smooth animations and transitions</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="animations" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div class="settings-item">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 fw-bold">Auto-Save</h6>
+                                    <p class="text-muted mb-0 small">Automatically save settings as you change them</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="autoSave" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="button" class="btn btn-walmart" onclick="saveSettings()">
+                                <i class="fas fa-save me-2"></i>Save All Settings
+                            </button>
+                            <button type="button" class="btn btn-walmart-yellow" onclick="resetSettings()">
+                                <i class="fas fa-undo me-2"></i>Reset to Defaults
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Account Overview -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-info-circle me-2" style="color: var(--walmart-blue);"></i>
+                            Account Overview
+                        </h6>
+                        <div class="mb-3">
+                            <small class="text-muted">Account Type</small>
+                            <p class="mb-1 fw-bold">Administrator</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Permissions Level</small>
+                            <p class="mb-1 fw-bold">Full Access</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Last Settings Update</small>
+                            <p class="mb-1 fw-bold">2 days ago</p>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Storage Used</small>
+                            <div class="progress mt-1" style="height: 6px; background: rgba(0, 113, 206, 0.1); border-radius: 10px;">
+                                <div class="progress-bar" style="width: 34%; background: var(--success-green); border-radius: 10px;"></div>
+                            </div>
+                            <small class="text-muted">1.2 GB of 3.5 GB</small>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-bolt me-2" style="color: var(--warning-orange);"></i>
+                            Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-walmart btn-sm" onclick="clearCache()">
+                                <i class="fas fa-trash me-2"></i>Clear Cache
+                            </button>
+                            <button class="btn btn-walmart btn-sm" onclick="refreshData()">
+                                <i class="fas fa-sync me-2"></i>Refresh Data
+                            </button>
+                            <button class="btn btn-walmart btn-sm" onclick="backupSettings()">
+                                <i class="fas fa-cloud-upload me-2"></i>Backup Settings
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="resetSystem()">
+                                <i class="fas fa-exclamation-triangle me-2"></i>System Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Information -->
+                    <div class="card-walmart p-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-server me-2" style="color: var(--success-green);"></i>
+                            System Information
+                        </h6>
+                        <div class="mb-2">
+                            <small class="text-muted">DRP Version</small>
+                            <p class="mb-1 fw-bold">v2.1.3</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Database Version</small>
+                            <p class="mb-1 fw-bold">PostgreSQL 14.2</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Last System Update</small>
+                            <p class="mb-1 fw-bold">January 15, 2025</p>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Server Status</small>
+                            <p class="mb-1 fw-bold text-success">
+                                <i class="fas fa-circle me-1" style="font-size: 0.8rem;"></i>Online
+                            </p>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-walmart-yellow btn-sm" onclick="checkUpdates()">
+                                <i class="fas fa-download me-2"></i>Check Updates
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-walmart">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-shield-alt me-2"></i>Digital Reputation</h6>
+                    <a href="#" class="footer-link">How It Works</a>
+                    <a href="#" class="footer-link">Verification Process</a>
+                    <a href="#" class="footer-link">Trust Levels</a>
+                    <a href="#" class="footer-link">Security</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-store me-2"></i>For Sellers</h6>
+                    <a href="#" class="footer-link">Get Verified</a>
+                    <a href="#" class="footer-link">Seller Dashboard</a>
+                    <a href="#" class="footer-link">Badge Management</a>
+                    <a href="#" class="footer-link">Analytics</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-users me-2"></i>For Customers</h6>
+                    <a href="#" class="footer-link">Verify Sellers</a>
+                    <a href="#" class="footer-link">QR Scanner</a>
+                    <a href="#" class="footer-link">Report Fraud</a>
+                    <a href="#" class="footer-link">Safety Tips</a>
+                </div>
+                <div class="col-md-3 footer-section">
+                    <h6><i class="fas fa-headset me-2"></i>Support</h6>
+                    <a href="#" class="footer-link">Help Center</a>
+                    <a href="#" class="footer-link">Contact Us</a>
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 2rem 0 1rem;">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.8);">&copy; 2025 Walmart Inc. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0" style="color: rgba(255, 255, 255, 0.8);">Powered by Walmart DRP System v2.0</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Get CSRF token for Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Load user settings from Django
+        function loadUserSettings() {
+            fetch('/api/user/settings/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.settings) {
+                    applySettingsToForm(data.settings);
+                }
+            })
+            .catch(error => {
+                console.log('Failed to load settings:', error);
+                // Keep existing default values as fallback
+            });
+        }
+
+        // Apply settings to form elements
+        function applySettingsToForm(settings) {
+            // Notification settings
+            if (settings.email_notifications !== undefined) {
+                document.getElementById('emailNotifications').checked = settings.email_notifications;
+            }
+            if (settings.sms_alerts !== undefined) {
+                document.getElementById('smsAlerts').checked = settings.sms_alerts;
+            }
+            if (settings.push_notifications !== undefined) {
+                document.getElementById('pushNotifications').checked = settings.push_notifications;
+            }
+            if (settings.weekly_report !== undefined) {
+                document.getElementById('weeklyReport').checked = settings.weekly_report;
+            }
+
+            // Security settings
+            if (settings.two_factor !== undefined) {
+                document.getElementById('twoFactor').checked = settings.two_factor;
+            }
+            if (settings.session_timeout !== undefined) {
+                document.getElementById('sessionTimeout').value = settings.session_timeout;
+            }
+            if (settings.login_alerts !== undefined) {
+                document.getElementById('loginAlerts').checked = settings.login_alerts;
+            }
+
+            // DRP settings
+            if (settings.default_validity !== undefined) {
+                document.getElementById('defaultValidity').value = settings.default_validity;
+            }
+            if (settings.auto_refresh !== undefined) {
+                document.getElementById('autoRefresh').checked = settings.auto_refresh;
+            }
+            if (settings.qr_format !== undefined) {
+                document.getElementById('qrFormat').value = settings.qr_format;
+            }
+            if (settings.bulk_operations !== undefined) {
+                document.getElementById('bulkOperations').checked = settings.bulk_operations;
+            }
+
+            // Interface settings
+            if (settings.theme !== undefined) {
+                document.getElementById('theme').value = settings.theme;
+            }
+            if (settings.layout !== undefined) {
+                document.getElementById('layout').value = settings.layout;
+            }
+            if (settings.animations !== undefined) {
+                document.getElementById('animations').checked = settings.animations;
+            }
+            if (settings.auto_save !== undefined) {
+                document.getElementById('autoSave').checked = settings.auto_save;
+            }
+        }
+
+        // Save all settings
+        function saveSettings() {
+            const settings = {
+                // Notification settings
+                email_notifications: document.getElementById('emailNotifications').checked,
+                sms_alerts: document.getElementById('smsAlerts').checked,
+                push_notifications: document.getElementById('pushNotifications').checked,
+                weekly_report: document.getElementById('weeklyReport').checked,
+
+                // Security settings
+                two_factor: document.getElementById('twoFactor').checked,
+                session_timeout: parseInt(document.getElementById('sessionTimeout').value),
+                login_alerts: document.getElementById('loginAlerts').checked,
+
+                // DRP settings
+                default_validity: parseInt(document.getElementById('defaultValidity').value),
+                auto_refresh: document.getElementById('autoRefresh').checked,
+                qr_format: document.getElementById('qrFormat').value,
+                bulk_operations: document.getElementById('bulkOperations').checked,
+
+                // Interface settings
+                theme: document.getElementById('theme').value,
+                layout: document.getElementById('layout').value,
+                animations: document.getElementById('animations').checked,
+                auto_save: document.getElementById('autoSave').checked
+            };
+
+            // Show loading
+            const saveBtn = document.querySelector('button[onclick="saveSettings()"]');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            saveBtn.disabled = true;
+
+            // Save settings via Django API
+            fetch('/api/user/settings/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Settings saved successfully!', 'success');
+                    applyThemeChanges(settings.theme);
+                } else {
+                    showAlert(data.message || 'Failed to save settings', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Settings save error:', error);
+                showAlert('Network error occurred while saving settings', 'error');
+            })
+            .finally(() => {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            });
+        }
+
+        // Reset settings to defaults
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to their default values?')) {
+                fetch('/api/user/settings/reset/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Settings reset to defaults successfully!', 'success');
+                        loadUserSettings(); // Reload default settings
+                    } else {
+                        showAlert(data.message || 'Failed to reset settings', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Settings reset error:', error);
+                    showAlert('Network error occurred while resetting settings', 'error');
+                });
+            }
+        }
+
+        // Apply theme changes
+        function applyThemeChanges(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else if (theme === 'light') {
+                document.body.classList.remove('dark-theme');
+            } else if (theme === 'auto') {
+                // Auto theme based on system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    document.body.classList.add('dark-theme');
+                } else {
+                    document.body.classList.remove('dark-theme');
+                }
+            }
+        }
+
+        // Quick Actions Functions
+        function exportData() {
+            showAlert('Preparing data export...', 'info');
+            
+            fetch('/api/user/export-data/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `walmart-drp-data-${new Date().toISOString().split('T')[0]}.zip`;
+                link.click();
+                window.URL.revokeObjectURL(url);
+                showAlert('Data export downloaded successfully!', 'success');
+            })
+            .catch(error => {
+                console.error('Export error:', error);
+                showAlert('Failed to export data. Please try again.', 'error');
+            });
+        }
+
+        function clearCache() {
+            if (confirm('This will clear all cached data. Are you sure?')) {
+                fetch('/api/system/clear-cache/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('Cache cleared successfully!', 'success');
+                    } else {
+                        showAlert('Failed to clear cache', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Clear cache error:', error);
+                    showAlert('Network error occurred', 'error');
+                });
+            }
+        }
+
+        function refreshData() {
+            showAlert('Refreshing system data...', 'info');
+            
+            fetch('/api/system/refresh-data/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Data refreshed successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('Failed to refresh data', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Refresh data error:', error);
+                showAlert('Network error occurred', 'error');
+            });
+        }
+
+        function backupSettings() {
+            fetch('/api/user/backup-settings/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showAlert('Settings backed up successfully!', 'success');
+                } else {
+                    showAlert('Failed to backup settings', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Backup settings error:', error);
+                showAlert('Network error occurred', 'error');
+            });
+        }
+
+        function resetSystem() {
+            const confirmText = prompt('This will reset the entire system to factory defaults. Type "RESET" to confirm:');
+            
+            if (confirmText === 'RESET') {
+                fetch('/api/system/factory-reset/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showAlert('System reset initiated. You will be redirected...', 'info');
+                        setTimeout(() => {
+                            window.location.href = '/login/';
+                        }, 3000);
+                    } else {
+                        showAlert(data.message || 'Failed to reset system', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('System reset error:', error);
+                    showAlert('Network error occurred', 'error');
+                });
+            } else if (confirmText !== null) {
+                showAlert('System reset cancelled - confirmation text incorrect', 'warning');
+            }
+        }
+
+        function checkUpdates() {
+            const updateBtn = document.querySelector('button[onclick="checkUpdates()"]');
+            const originalText = updateBtn.innerHTML;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Checking...';
+            updateBtn.disabled = true;
+
+            fetch('/api/system/check-updates/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.updates_available) {
+                    showAlert(`Update available: Version ${data.latest_version}`, 'info');
+                } else {
+                    showAlert('System is up to date!', 'success');
+                }
+            })
+            .catch(error => {
+                console.error('Check updates error:', error);
+                showAlert('Failed to check for updates', 'error');
+            })
+            .finally(() => {
+                updateBtn.innerHTML = originalText;
+                updateBtn.disabled = false;
+            });
+        }
+
+        // Logout confirmation
+        function confirmLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('/api/auth/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login/';
+                    } else {
+                        window.location.href = '/logout/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Logout error:', error);
+                    window.location.href = '/logout/';
+                });
+            }
+        }
+
+        // Auto-save functionality
+        function setupAutoSave() {
+            const autoSaveEnabled = document.getElementById('autoSave').checked;
+            
+            if (autoSaveEnabled) {
+                // Add event listeners to form elements
+                const formElements = document.querySelectorAll('input, select');
+                formElements.forEach(element => {
+                    element.addEventListener('change', debounce(autoSaveSettings, 2000));
+                });
+            }
+        }
+
+        function autoSaveSettings() {
+            if (document.getElementById('autoSave').checked) {
+                saveSettings();
+            }
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Show alert function
+        function showAlert(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'warning' ? 'alert-warning' : 
+                              type === 'info' ? 'alert-info' : 'alert-danger';
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
+        // Add entrance animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load user settings
+            loadUserSettings();
+            
+            // Setup auto-save
+            setupAutoSave();
+
+            const cards = document.querySelectorAll('.card-walmart');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Update auto-save setup when toggle changes
+            document.getElementById('autoSave').addEventListener('change', setupAutoSave);
+            
+            // Initialize theme based on saved preference
+            const savedTheme = document.getElementById('theme').value;
+            applyThemeChanges(savedTheme);
+            
+            // Add smooth scrolling to all internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Add ripple effect to buttons
+            addRippleEffect();
+            
+            // Initialize tooltips if Bootstrap tooltips are available
+            if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+        });
+
+        // Add ripple effect to buttons
+        function addRippleEffect() {
+            const buttons = document.querySelectorAll('.btn-walmart, .btn-walmart-yellow');
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    let ripple = document.createElement('span');
+                    ripple.classList.add('ripple');
+                    this.appendChild(ripple);
+                    
+                    let x = e.clientX - e.target.offsetLeft;
+                    let y = e.clientY - e.target.offsetTop;
+                    
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+
+        // Handle system preference changes for auto theme
+        if (window.matchMedia) {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addListener(function(e) {
+                if (document.getElementById('theme').value === 'auto') {
+                    applyThemeChanges('auto');
+                }
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S to save settings
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveSettings();
+            }
+            
+            // Ctrl/Cmd + R to reset settings (with confirmation)
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+                e.preventDefault();
+                resetSettings();
+            }
+            
+            // Escape key to close any open modals or dropdowns
+            if (e.key === 'Escape') {
+                const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+                openDropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
+        });
+
+        // Form validation
+        function validateSettings() {
+            let isValid = true;
+            const errors = [];
+
+            // Validate session timeout
+            const sessionTimeout = parseInt(document.getElementById('sessionTimeout').value);
+            if (isNaN(sessionTimeout) || sessionTimeout < 5 || sessionTimeout > 480) {
+                errors.push('Session timeout must be between 5 minutes and 8 hours');
+                isValid = false;
+            }
+
+            // Validate QR validity
+            const qrValidity = parseInt(document.getElementById('defaultValidity').value);
+            if (isNaN(qrValidity) || qrValidity < 1 || qrValidity > 1440) {
+                errors.push('QR validity must be between 1 minute and 24 hours');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                showAlert('Validation errors: ' + errors.join(', '), 'error');
+            }
+
+            return isValid;
+        }
+
+        // Enhanced save settings with validation
+        function saveSettingsWithValidation() {
+            if (!validateSettings()) {
+                return;
+            }
+            saveSettings();
+        }
+
+        // Export settings as JSON
+        function exportSettingsAsJson() {
+            const settings = {
+                email_notifications: document.getElementById('emailNotifications').checked,
+                sms_alerts: document.getElementById('smsAlerts').checked,
+                push_notifications: document.getElementById('pushNotifications').checked,
+                weekly_report: document.getElementById('weeklyReport').checked,
+                two_factor: document.getElementById('twoFactor').checked,
+                session_timeout: parseInt(document.getElementById('sessionTimeout').value),
+                login_alerts: document.getElementById('loginAlerts').checked,
+                default_validity: parseInt(document.getElementById('defaultValidity').value),
+                auto_refresh: document.getElementById('autoRefresh').checked,
+                qr_format: document.getElementById('qrFormat').value,
+                bulk_operations: document.getElementById('bulkOperations').checked,
+                theme: document.getElementById('theme').value,
+                layout: document.getElementById('layout').value,
+                animations: document.getElementById('animations').checked,
+                auto_save: document.getElementById('autoSave').checked,
+                exported_at: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `walmart-drp-settings-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showAlert('Settings exported successfully!', 'success');
+        }
+
+        // Import settings from JSON
+        function importSettingsFromJson() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        const settings = JSON.parse(event.target.result);
+                        applySettingsToForm(settings);
+                        showAlert('Settings imported successfully!', 'success');
+                    } catch (error) {
+                        showAlert('Invalid settings file format', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // Print current settings
+        function printSettings() {
+            const printWindow = window.open('', '_blank');
+            const settings = {
+                email_notifications: document.getElementById('emailNotifications').checked,
+                sms_alerts: document.getElementById('smsAlerts').checked,
+                push_notifications: document.getElementById('pushNotifications').checked,
+                weekly_report: document.getElementById('weeklyReport').checked,
+                two_factor: document.getElementById('twoFactor').checked,
+                session_timeout: document.getElementById('sessionTimeout').value,
+                login_alerts: document.getElementById('loginAlerts').checked,
+                default_validity: document.getElementById('defaultValidity').value,
+                auto_refresh: document.getElementById('autoRefresh').checked,
+                qr_format: document.getElementById('qrFormat').value,
+                bulk_operations: document.getElementById('bulkOperations').checked,
+                theme: document.getElementById('theme').value,
+                layout: document.getElementById('layout').value,
+                animations: document.getElementById('animations').checked,
+                auto_save: document.getElementById('autoSave').checked
+            };
+
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Walmart DRP Settings Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #0071ce; }
+                        .setting-group { margin-bottom: 20px; }
+                        .setting-item { margin-bottom: 10px; }
+                        .setting-label { font-weight: bold; }
+                        .setting-value { margin-left: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Walmart DRP System Settings</h1>
+                    <p><strong>Generated on:</strong> ${new Date().toLocaleString()}</p>
+                    
+                    <div class="setting-group">
+                        <h2>Notification Preferences</h2>
+                        <div class="setting-item">
+                            <span class="setting-label">Email Notifications:</span>
+                            <span class="setting-value">${settings.email_notifications ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">SMS Alerts:</span>
+                            <span class="setting-value">${settings.sms_alerts ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Push Notifications:</span>
+                            <span class="setting-value">${settings.push_notifications ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Weekly Report:</span>
+                            <span class="setting-value">${settings.weekly_report ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h2>Security & Privacy</h2>
+                        <div class="setting-item">
+                            <span class="setting-label">Two-Factor Authentication:</span>
+                            <span class="setting-value">${settings.two_factor ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Session Timeout:</span>
+                            <span class="setting-value">${settings.session_timeout} minutes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Login Alerts:</span>
+                            <span class="setting-value">${settings.login_alerts ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h2>DRP Configuration</h2>
+                        <div class="setting-item">
+                            <span class="setting-label">Default QR Validity:</span>
+                            <span class="setting-value">${settings.default_validity} minutes</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Auto-Refresh QR:</span>
+                            <span class="setting-value">${settings.auto_refresh ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">QR Format:</span>
+                            <span class="setting-value">${settings.qr_format.toUpperCase()}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Bulk Operations:</span>
+                            <span class="setting-value">${settings.bulk_operations ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <h2>Interface Preferences</h2>
+                        <div class="setting-item">
+                            <span class="setting-label">Theme:</span>
+                            <span class="setting-value">${settings.theme.charAt(0).toUpperCase() + settings.theme.slice(1)}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Layout:</span>
+                            <span class="setting-value">${settings.layout.charAt(0).toUpperCase() + settings.layout.slice(1)}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Animations:</span>
+                            <span class="setting-value">${settings.animations ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                        <div class="setting-item">
+                            <span class="setting-label">Auto-Save:</span>
+                            <span class="setting-value">${settings.auto_save ? 'Enabled' : 'Disabled'}</span>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Add CSS for ripple effect
+        const rippleCSS = `
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent = rippleCSS;
+        document.head.appendChild(style);
+
+        // Performance monitoring
+        function monitorPerformance() {
+            if ('performance' in window) {
+                window.addEventListener('load', function() {
+                    setTimeout(function() {
+                        const perfData = performance.getEntriesByType('navigation')[0];
+                        if (perfData) {
+                            console.log('Page load time:', perfData.loadEventEnd - perfData.fetchStart, 'ms');
+                        }
+                    }, 0);
+                });
+            }
+        }
+
+        // Initialize performance monitoring
+        monitorPerformance();
+
+        // Add context menu for additional options
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('.settings-item')) {
+                e.preventDefault();
+                // You can add custom context menu here if needed
+            }
+        });
+
+        // Accessibility improvements
+        function improveAccessibility() {
+            // Add ARIA labels to switches
+            document.querySelectorAll('.switch input').forEach(input => {
+                const label = input.closest('.settings-item').querySelector('h6').textContent;
+                input.setAttribute('aria-label', label);
+            });
+
+            // Add skip links
+            const skipLink = document.createElement('a');
+            skipLink.href = '#main-content';
+            skipLink.textContent = 'Skip to main content';
+            skipLink.className = 'sr-only sr-only-focusable';
+            skipLink.style.cssText = 'position: absolute; top: -40px; left: 6px; z-index: 1000; color: white; background: #0071ce; padding: 8px; text-decoration: none;';
+            skipLink.addEventListener('focus', function() {
+                this.style.top = '6px';
+            });
+            skipLink.addEventListener('blur', function() {
+                this.style.top = '-40px';
+            });
+            document.body.insertBefore(skipLink, document.body.firstChild);
+        }
+
+        // Initialize accessibility improvements
+        improveAccessibility();
+    </script>
+</body>
+</html>
