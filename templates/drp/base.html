@@ -442,6 +442,27 @@
             width: 20px;
         }
 
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--yellow-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--walmart-blue);
+            font-weight: 700;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .navbar-brand {
@@ -475,6 +496,10 @@
                 width: 60px;
                 height: 60px;
                 font-size: 1.5rem;
+            }
+
+            .user-info {
+                display: none;
             }
         }
 
@@ -530,15 +555,21 @@
                 </ul>
                 
                 <ul class="navbar-nav">
+                    <li class="nav-item me-3">
+                        <div class="user-info">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <span id="userEmail">user@walmart.com</span>
+                        </div>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-2"></i>Account
                         </a>
                         <ul class="dropdown-menu glass-card">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -556,7 +587,7 @@
                         <div style="background: var(--yellow-gradient); width: 120px; height: 120px; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; box-shadow: 0 20px 40px rgba(255, 194, 32, 0.4);">
                             <i class="fas fa-shield-alt" style="font-size: 3.5rem; color: var(--walmart-blue);"></i>
                         </div>
-                        <h1 class="display-4 fw-bold mb-4" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <h1 class="display-4 fw-bold mb-4" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="welcomeTitle">
                             Welcome to Walmart DRP
                         </h1>
                         <p class="lead mb-4" style="font-size: 1.3rem; color: var(--walmart-dark-gray);">
@@ -665,8 +696,142 @@
             }
         });
 
+        // Check authentication
+        function checkAuthentication() {
+            const userData = localStorage.getItem('walmartDRPUser') || sessionStorage.getItem('walmartDRPUser');
+            
+            if (!userData) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                if (!user.isLoggedIn) {
+                    window.location.href = 'login.html';
+                    return null;
+                }
+                return user;
+            } catch (error) {
+                localStorage.removeItem('walmartDRPUser');
+                sessionStorage.removeItem('walmartDRPUser');
+                window.location.href = 'login.html';
+                return null;
+            }
+        }
+
+        // Update user interface with user data
+        function updateUserInterface(userData) {
+            // Update user email display
+            const userEmailElement = document.getElementById('userEmail');
+            if (userEmailElement) {
+                userEmailElement.textContent = userData.email;
+            }
+            
+            // Update user avatar with first letter of email
+            const userAvatarElement = document.getElementById('userAvatar');
+            if (userAvatarElement) {
+                userAvatarElement.textContent = userData.email.charAt(0).toUpperCase();
+            }
+            
+            // Update welcome message
+            const welcomeTitleElement = document.getElementById('welcomeTitle');
+            if (welcomeTitleElement) {
+                const name = userData.email.split('@')[0];
+                welcomeTitleElement.textContent = `Welcome back, ${name}!`;
+            }
+        }
+
+        // Logout confirmation
+        function confirmLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                performLogout();
+            }
+        }
+
+        // Perform logout - Enhanced version with better debugging
+        function performLogout() {
+            try {
+                // Clear stored user data
+                localStorage.removeItem('walmartDRPUser');
+                sessionStorage.removeItem('walmartDRPUser');
+                
+                console.log('✅ User data cleared successfully');
+                
+                // Immediate redirect without delay - more reliable
+                console.log('🔄 Attempting redirect to login page...');
+                
+                // Force immediate redirect
+                window.location.replace('login.html');
+                
+            } catch (error) {
+                console.error('❌ Logout error:', error);
+                
+                // Fallback: try different redirect methods
+                try {
+                    window.location.href = 'login.html';
+                } catch (error2) {
+                    try {
+                        window.location = 'login.html';
+                    } catch (error3) {
+                        // Last resort - manual instruction
+                        alert('Logout completed. Please manually navigate to login.html');
+                        console.error('❌ All redirect methods failed:', error3);
+                    }
+                }
+            }
+        }
+
+        // Alternative simpler logout function (uncomment to use instead)
+        /*
+        function performLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('Logged out successfully!');
+            window.location.replace('login.html');
+        }
+        */
+
+        // Show alert function
+        function showAlert(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'warning' ? 'alert-warning' : 
+                              type === 'danger' ? 'alert-danger' : 'alert-info';
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+        }
+
         // Set active nav link based on current page
         document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication on page load
+            const userData = checkAuthentication();
+            if (!userData) {
+                return; // Will be redirected to login
+            }
+            
+            // Update UI with user data
+            updateUserInterface(userData);
+            
+            // Show welcome message
+            setTimeout(() => {
+                const firstName = userData.email.split('@')[0];
+                showAlert(`Welcome back, ${firstName}! Your dashboard is ready.`, 'success');
+            }, 1000);
+            
             const currentPage = window.location.pathname.split('/').pop() || 'base.html';
             const navLinks = document.querySelectorAll('.nav-link');
             
@@ -676,6 +841,84 @@
                     link.classList.add('active');
                 }
             });
+
+            // Animate cards on load
+            const cards = document.querySelectorAll('.card-walmart, .quick-access-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+
+        // Handle beforeunload to save any pending data
+        window.addEventListener('beforeunload', function(e) {
+            // In a real application, you might want to save any unsaved changes
+        });
+
+        // Session timeout warning
+        function checkSessionTimeout() {
+            const userData = localStorage.getItem('walmartDRPUser') || sessionStorage.getItem('walmartDRPUser');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const loginTime = new Date(user.loginTime);
+                    const now = new Date();
+                    const sessionDuration = (now - loginTime) / (1000 * 60); // minutes
+                    
+                    // Warn if session is longer than 8 hours (480 minutes)
+                    if (sessionDuration > 480) {
+                        if (confirm('Your session has been active for a long time. Would you like to refresh your session or logout for security?')) {
+                            // Refresh session
+                            user.loginTime = now.toISOString();
+                            if (user.rememberMe) {
+                                localStorage.setItem('walmartDRPUser', JSON.stringify(user));
+                            } else {
+                                sessionStorage.setItem('walmartDRPUser', JSON.stringify(user));
+                            }
+                            showAlert('Session refreshed successfully!', 'success');
+                        } else {
+                            performLogout();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Session check error:', error);
+                }
+            }
+        }
+
+        // Check session timeout every 30 minutes
+        setInterval(checkSessionTimeout, 30 * 60 * 1000);
+
+        // Handle connection status
+        window.addEventListener('online', function() {
+            showAlert('Connection restored!', 'success');
+        });
+        
+        window.addEventListener('offline', function() {
+            showAlert('You are currently offline. Some features may not work properly.', 'warning');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + L to logout
+            if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                e.preventDefault();
+                confirmLogout();
+            }
+            
+            // Escape key to close any open modals or dropdowns
+            if (e.key === 'Escape') {
+                const openDropdowns = document.querySelectorAll('.dropdown-menu.show');
+                openDropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+            }
         });
     </script>
 </body>

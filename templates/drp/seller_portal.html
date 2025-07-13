@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Walmart DRP</title>
+    <title>Home Dashboard - Walmart DRP</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -235,68 +235,147 @@
             transform: scaleX(1);
         }
 
-        /* Profile Avatar */
-        .profile-avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: var(--blue-gradient);
+        /* Stats Cards */
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: none;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stats-card.blue::before { background: var(--blue-gradient); }
+        .stats-card.green::before { background: var(--green-gradient); }
+        .stats-card.yellow::before { background: var(--yellow-gradient); }
+        .stats-card.red::before { background: linear-gradient(135deg, var(--danger-red), #dc2626); }
+
+        .stats-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.8rem;
             color: white;
-            font-size: 4rem;
-            margin: 0 auto 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover .stats-icon {
+            transform: scale(1.1);
+        }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--blue-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Trust Level Badges */
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 113, 206, 0.3);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 113, 206, 0.4);
+        .trust-verified { background: var(--green-gradient); color: white; }
+        .trust-premium { background: var(--blue-gradient); color: white; }
+        .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
+        .trust-revoked { background: linear-gradient(135deg, var(--danger-red), #dc2626); color: white; }
+
+        /* Status Indicators */
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            position: relative;
         }
 
-        .profile-avatar::before {
+        .status-indicator::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s;
-            opacity: 0;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .profile-avatar:hover::before {
-            animation: shimmer 0.6s ease-in-out;
+        .status-active { background-color: var(--success-green); }
+        .status-active::before { background-color: var(--success-green); }
+
+        .status-expired { background-color: var(--warning-orange); }
+        .status-expired::before { background-color: var(--warning-orange); }
+
+        .status-revoked { background-color: var(--danger-red); }
+        .status-revoked::before { background-color: var(--danger-red); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.3); opacity: 0.2; }
+            100% { transform: scale(1); opacity: 0.6; }
         }
 
-        /* Form Styles */
-        .form-control-walmart {
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid var(--walmart-blue);
-            border-radius: 12px;
-            padding: 0.8rem 1.2rem;
-            font-size: 1rem;
+        /* Activity Feed */
+        .activity-item {
+            padding: 1rem;
+            border-left: 3px solid transparent;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.5);
             transition: all 0.3s ease;
         }
 
-        .form-control-walmart:focus {
-            outline: none;
-            border-color: var(--success-green);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-            background: white;
+        .activity-item:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateX(5px);
         }
 
-        .form-label-walmart {
-            font-weight: 600;
-            color: var(--walmart-dark-gray);
-            margin-bottom: 0.75rem;
-        }
+        .activity-item.verification { border-left-color: var(--success-green); }
+        .activity-item.warning { border-left-color: var(--warning-orange); }
+        .activity-item.error { border-left-color: var(--danger-red); }
+        .activity-item.info { border-left-color: var(--walmart-blue); }
 
         /* Button Styles */
         .btn-walmart {
@@ -304,15 +383,15 @@
             border: none;
             color: white;
             font-weight: 600;
-            padding: 1rem 2.5rem;
-            border-radius: 15px;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(0, 113, 206, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 113, 206, 0.3);
         }
 
         .btn-walmart::before {
@@ -331,93 +410,9 @@
         }
 
         .btn-walmart:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 35px rgba(0, 113, 206, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 113, 206, 0.4);
             color: white;
-        }
-
-        .btn-walmart-yellow {
-            background: var(--yellow-gradient);
-            color: var(--walmart-blue);
-            font-weight: 700;
-            box-shadow: 0 8px 25px rgba(255, 194, 32, 0.3);
-        }
-
-        .btn-walmart-yellow:hover {
-            box-shadow: 0 15px 35px rgba(255, 194, 32, 0.4);
-            color: var(--walmart-blue);
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger-red), #dc2626);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-danger:hover {
-            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
-        }
-
-        /* Trust Badge */
-        .trust-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .trust-verified { background: var(--green-gradient); color: white; }
-        .trust-premium { background: var(--blue-gradient); color: white; }
-        .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
-
-        /* Activity Timeline */
-        .activity-timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .activity-timeline::before {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--blue-gradient);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 1.5rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .timeline-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateX(10px);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.2rem;
-            top: 1.5rem;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--success-green);
-            border: 3px solid white;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
         }
 
         /* Footer */
@@ -493,15 +488,19 @@
                 padding: 1rem 0;
             }
 
-            .profile-avatar {
-                width: 120px;
-                height: 120px;
-                font-size: 3rem;
+            .stats-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
             }
 
-            .btn-walmart {
-                padding: 0.75rem 2rem;
-                font-size: 0.85rem;
+            .stats-number {
+                font-size: 2rem;
+            }
+
+            .stats-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
             }
         }
 
@@ -528,7 +527,7 @@
     <!-- Navigation Header -->
     <nav class="navbar navbar-expand-lg navbar-walmart fixed-top" id="mainNavbar">
         <div class="container">
-            <a class="navbar-brand" href="base.html">
+            <a class="navbar-brand" href="index.html">
                 <div class="walmart-logo">W</div>
                 Walmart DRP
             </a>
@@ -540,7 +539,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html">
+                        <a class="nav-link active" href="home.html">
                             <i class="fas fa-home me-2"></i>Home
                         </a>
                     </li>
@@ -558,7 +557,7 @@
                 
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-2"></i>Account
                         </a>
                         <ul class="dropdown-menu glass-card">
@@ -576,182 +575,240 @@
     <!-- Main Content -->
     <main class="main-content" style="margin-top: 100px;">
         <div class="container">
-            <!-- Header -->
+            <!-- Welcome Header -->
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card-walmart p-4">
                         <div class="d-flex align-items-center">
                             <div style="background: var(--blue-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                                <i class="fas fa-user-circle" style="font-size: 1.5rem; color: white;"></i>
+                                <i class="fas fa-home" style="font-size: 1.5rem; color: white;"></i>
                             </div>
                             <div>
                                 <h2 class="mb-1 fw-bold" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                                    User Profile
+                                    Dashboard Overview
                                 </h2>
-                                <p class="mb-0 text-muted">Manage your account information and preferences</p>
+                                <p class="mb-0 text-muted">Welcome back! Here's your DRP system overview.</p>
+                            </div>
+                            <div class="ms-auto">
+                                <span class="trust-badge trust-verified">
+                                    <i class="fas fa-shield-alt me-2"></i>Verified User
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <!-- Profile Information -->
-                <div class="col-lg-8 mb-4">
-                    <div class="card-walmart p-4 mb-4">
-                        <h5 class="fw-bold mb-4">
-                            <i class="fas fa-edit me-2" style="color: var(--walmart-blue);"></i>
-                            Personal Information
-                        </h5>
-                        
-                        <form id="profileForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">First Name</label>
-                                    <input type="text" class="form-control form-control-walmart" id="firstName" value="John">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Last Name</label>
-                                    <input type="text" class="form-control form-control-walmart" id="lastName" value="Anderson">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Email Address</label>
-                                    <input type="email" class="form-control form-control-walmart" id="email" value="john.anderson@walmart.com">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Phone Number</label>
-                                    <input type="tel" class="form-control form-control-walmart" id="phone" value="+1 (555) 123-4567">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Department</label>
-                                    <select class="form-control form-control-walmart" id="department">
-                                        <option>Digital Verification</option>
-                                        <option>Seller Management</option>
-                                        <option>Security & Compliance</option>
-                                        <option>Admin Operations</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Employee ID</label>
-                                    <input type="text" class="form-control form-control-walmart" id="employeeId" value="WM-45789" readonly>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex gap-3">
-                                <button type="submit" class="btn btn-walmart">
-                                    <i class="fas fa-save me-2"></i>Save Changes
-                                </button>
-                                <button type="button" class="btn btn-walmart-yellow" onclick="resetForm()">
-                                    <i class="fas fa-undo me-2"></i>Reset
-                                </button>
-                            </div>
-                        </form>
+            <!-- Stats Cards -->
+            <div class="row mb-5">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card blue">
+                        <div class="stats-icon" style="background: var(--blue-gradient);">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="stats-number">1,247</div>
+                        <h6 class="fw-bold mb-2">QR Verifications</h6>
+                        <p class="text-muted mb-0">This month</p>
                     </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card green">
+                        <div class="stats-icon" style="background: var(--green-gradient);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stats-number">98.7%</div>
+                        <h6 class="fw-bold mb-2">Success Rate</h6>
+                        <p class="text-muted mb-0">Verification accuracy</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card yellow">
+                        <div class="stats-icon" style="background: var(--yellow-gradient);">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="stats-number">8,432</div>
+                        <h6 class="fw-bold mb-2">Verified Sellers</h6>
+                        <p class="text-muted mb-0">Active in network</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card red">
+                        <div class="stats-icon" style="background: linear-gradient(135deg, var(--danger-red), #dc2626);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stats-number">23</div>
+                        <h6 class="fw-bold mb-2">Fraud Attempts</h6>
+                        <p class="text-muted mb-0">Blocked this week</p>
+                    </div>
+                </div>
+            </div>
 
-                    <!-- Change Password -->
+            <!-- Main Dashboard Content -->
+            <div class="row">
+                <!-- Quick Actions -->
+                <div class="col-lg-4 mb-4">
                     <div class="card-walmart p-4">
                         <h5 class="fw-bold mb-4">
-                            <i class="fas fa-key me-2" style="color: var(--warning-orange);"></i>
-                            Change Password
+                            <i class="fas fa-bolt me-2" style="color: var(--walmart-yellow);"></i>
+                            Quick Actions
                         </h5>
-                        
-                        <form id="passwordForm">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">Current Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="currentPassword" placeholder="Enter current password">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">New Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="newPassword" placeholder="Enter new password">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">Confirm Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="confirmPassword" placeholder="Confirm new password">
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-shield-alt me-2"></i>Update Password
+                        <div class="d-grid gap-3">
+                            <a href="verify.html" class="btn btn-walmart">
+                                <i class="fas fa-qrcode me-2"></i>Scan QR Code
+                            </a>
+                            <a href="seller_portal.html" class="btn btn-walmart">
+                                <i class="fas fa-store me-2"></i>Seller Dashboard
+                            </a>
+                            <button class="btn btn-walmart">
+                                <i class="fas fa-chart-bar me-2"></i>View Reports
                             </button>
-                        </form>
+                            <button class="btn btn-walmart">
+                                <i class="fas fa-cog me-2"></i>System Settings
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Profile Sidebar -->
-                <div class="col-lg-4">
-                    <!-- Profile Avatar -->
-                    <div class="card-walmart p-4 mb-4 text-center">
-                        <div class="profile-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h4 class="fw-bold mb-2">John Anderson</h4>
-                        <p class="text-muted mb-3">Digital Verification Specialist</p>
-                        <span class="trust-badge trust-verified">
-                            <i class="fas fa-shield-alt me-2"></i>Verified Employee
-                        </span>
-                        
-                        <div class="mt-4">
-                            <button class="btn btn-walmart-yellow btn-sm">
-                                <i class="fas fa-camera me-2"></i>Change Photo
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Account Statistics -->
-                    <div class="card-walmart p-4 mb-4">
-                        <h6 class="fw-bold mb-3">
-                            <i class="fas fa-chart-bar me-2" style="color: var(--success-green);"></i>
-                            Account Statistics
-                        </h6>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <small>Profile Completion</small>
-                                <small>95%</small>
-                            </div>
-                            <div class="progress" style="height: 6px; background: rgba(0, 113, 206, 0.1); border-radius: 10px;">
-                                <div class="progress-bar" style="width: 95%; background: var(--green-gradient); border-radius: 10px;"></div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <small>Security Score</small>
-                                <small>88%</small>
-                            </div>
-                            <div class="progress" style="height: 6px; background: rgba(0, 113, 206, 0.1); border-radius: 10px;">
-                                <div class="progress-bar" style="width: 88%; background: var(--blue-gradient); border-radius: 10px;"></div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-4">
-                            <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>
-                                Member since January 2023
-                            </small>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity -->
+                <!-- Recent Activity -->
+                <div class="col-lg-8 mb-4">
                     <div class="card-walmart p-4">
-                        <h6 class="fw-bold mb-3">
+                        <h5 class="fw-bold mb-4">
                             <i class="fas fa-clock me-2" style="color: var(--walmart-blue);"></i>
                             Recent Activity
-                        </h6>
-                        <div class="activity-timeline">
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Profile Updated</h6>
-                                <p class="mb-1 text-muted small">Changed phone number</p>
-                                <small class="text-muted">2 hours ago</small>
+                        </h5>
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            <div class="activity-item verification">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-active"></span>
+                                            New Seller Verified
+                                        </h6>
+                                        <p class="mb-1 text-muted">TechMart Electronics has been successfully verified</p>
+                                        <small class="text-muted">2 minutes ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-verified">Verified</span>
+                                </div>
                             </div>
-                            
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Password Changed</h6>
-                                <small class="text-muted">1 day ago</small>
+
+                            <div class="activity-item info">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-active"></span>
+                                            QR Code Generated
+                                        </h6>
+                                        <p class="mb-1 text-muted">QR-7749 created for MegaStore Plus</p>
+                                        <small class="text-muted">15 minutes ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-premium">Premium</span>
+                                </div>
                             </div>
-                            
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Settings Modified</h6>
-                                <p class="mb-1 text-muted small">Notification preferences updated</p>
-                                <small class="text-muted">3 days ago</small>
+
+                            <div class="activity-item warning">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-expired"></span>
+                                            Certification Expiring
+                                        </h6>
+                                        <p class="mb-1 text-muted">QuickShop's verification expires in 7 days</p>
+                                        <small class="text-muted">1 hour ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-basic">Basic</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item error">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-revoked"></span>
+                                            Fraud Attempt Blocked
+                                        </h6>
+                                        <p class="mb-1 text-muted">Suspicious QR scan from IP: 192.168.1.xxx</p>
+                                        <small class="text-muted">3 hours ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-revoked">Blocked</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item verification">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-active"></span>
+                                            Bulk Verification Complete
+                                        </h6>
+                                        <p class="mb-1 text-muted">157 sellers processed in batch verification</p>
+                                        <small class="text-muted">5 hours ago</small>
+                                    </div>
+                                    <span class="trust-badge trust-verified">Complete</span>
+                                </div>
+                            </div>
+
+                            <div class="activity-item info">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">
+                                            <span class="status-indicator status-active"></span>
+                                            System Update
+                                        </h6>
+                                        <p class="mb-1 text-muted">DRP System updated to version 2.1.3</p>
+                                        <small class="text-muted">Yesterday</small>
+                                    </div>
+                                    <span class="trust-badge trust-premium">System</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-walmart p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-server me-2" style="color: var(--success-green);"></i>
+                            System Status
+                        </h5>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="status-indicator status-active"></span>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">QR Verification Service</h6>
+                                        <small class="text-muted">Operational</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="status-indicator status-active"></span>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Database</h6>
+                                        <small class="text-muted">Operational</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="status-indicator status-expired"></span>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Email Service</h6>
+                                        <small class="text-muted">Maintenance</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <span class="status-indicator status-active"></span>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">API Gateway</h6>
+                                        <small class="text-muted">Operational</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -835,9 +892,9 @@
             }
         });
 
-        // Load user profile data from Django
-        function loadUserProfile() {
-            fetch('/api/user/profile/', {
+        // Load real dashboard statistics from Django API
+        function loadDashboardStats() {
+            fetch('/api/drp/stats/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -846,204 +903,347 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data && data.user) {
-                    populateProfileForm(data.user);
-                    updateProfileDisplay(data.user);
+                if (data) {
+                    updateStatsDisplay(data);
                 }
             })
             .catch(error => {
-                console.log('Failed to load profile data:', error);
-                // Keep existing mock data as fallback
+                console.log('Using fallback stats due to:', error);
+                // Keep current mock data as fallback
             });
         }
 
-        // Populate form with user data
-        function populateProfileForm(user) {
-            if (user.first_name) document.getElementById('firstName').value = user.first_name;
-            if (user.last_name) document.getElementById('lastName').value = user.last_name;
-            if (user.email) document.getElementById('email').value = user.email;
-            if (user.phone) document.getElementById('phone').value = user.phone;
-            if (user.department) document.getElementById('department').value = user.department;
-            if (user.employee_id) document.getElementById('employeeId').value = user.employee_id;
-        }
-
-        // Update profile display
-        function updateProfileDisplay(user) {
-            const fullName = `${user.first_name || 'John'} ${user.last_name || 'Anderson'}`;
-            const nameElements = document.querySelectorAll('h4.fw-bold');
-            nameElements.forEach(el => {
-                if (el.textContent.includes('John Anderson')) {
-                    el.textContent = fullName;
-                }
-            });
-
-            if (user.department) {
-                const jobTitle = document.querySelector('p.text-muted');
-                if (jobTitle && jobTitle.textContent.includes('Specialist')) {
-                    jobTitle.textContent = `${user.department} Specialist`;
-                }
-            }
-        }
-
-        // Handle profile form submission
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                first_name: document.getElementById('firstName').value,
-                last_name: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                department: document.getElementById('department').value
-            };
-
-            // Validate email
-            if (!isValidEmail(formData.email)) {
-                showAlert('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Show loading
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
-            submitBtn.disabled = true;
-
-            // Update profile via Django API
-            fetch('/api/user/profile/', {
-                method: 'PUT',
+        // Load seller statistics
+        function loadSellerStats() {
+            fetch('/api/seller/stats/', {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(formData)
+                }
             })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Profile updated successfully!', 'success');
-                    updateProfileDisplay(data.user);
-                } else {
-                    showAlert(data.message || 'Failed to update profile', 'error');
+                if (data) {
+                    updateSellerStatsDisplay(data);
                 }
             })
             .catch(error => {
-                console.error('Profile update error:', error);
-                showAlert('Network error occurred while updating profile', 'error');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                console.log('Using fallback seller stats due to:', error);
             });
-        });
+        }
 
-        // Handle password change
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Update stats display with real data
+        function updateStatsDisplay(data) {
+            const statsNumbers = document.querySelectorAll('.stats-number');
             
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // Validate passwords
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                showAlert('Please fill in all password fields', 'warning');
-                return;
+            if (statsNumbers[0] && data.recent_verifications !== undefined) {
+                statsNumbers[0].textContent = data.recent_verifications.toLocaleString();
             }
-
-            if (newPassword !== confirmPassword) {
-                showAlert('New passwords do not match', 'error');
-                return;
+            if (statsNumbers[1] && data.total_verifications && data.failed_verifications !== undefined) {
+                const successRate = data.total_verifications > 0 ? 
+                    ((data.total_verifications - data.failed_verifications) / data.total_verifications * 100) : 98.7;
+                statsNumbers[1].textContent = successRate.toFixed(1) + '%';
             }
-
-            if (newPassword.length < 8) {
-                showAlert('New password must be at least 8 characters long', 'error');
-                return;
+            if (statsNumbers[3] && data.failed_verifications !== undefined) {
+                statsNumbers[3].textContent = data.failed_verifications;
             }
+        }
 
-            // Show loading
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
-            submitBtn.disabled = true;
+        // Update seller stats display
+        function updateSellerStatsDisplay(data) {
+            const statsNumbers = document.querySelectorAll('.stats-number');
+            
+            if (statsNumbers[2] && data.verified_sellers !== undefined) {
+                statsNumbers[2].textContent = data.verified_sellers.toLocaleString();
+            }
+        }
 
-            // Update password via Django API
-            fetch('/api/user/change-password/', {
-                method: 'POST',
+        // Load recent activity from Django API
+        function loadRecentActivity() {
+            fetch('/api/drp/recent-activity/', {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    current_password: currentPassword,
-                    new_password: newPassword
-                })
+                }
             })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Password updated successfully!', 'success');
-                    document.getElementById('passwordForm').reset();
-                    addActivityToTimeline('Password Changed', 'Security credentials updated', 'Just now');
-                } else {
-                    showAlert(data.message || 'Failed to update password', 'error');
+                if (data && data.activities) {
+                    updateActivityFeed(data.activities);
                 }
             })
             .catch(error => {
-                console.error('Password update error:', error);
-                showAlert('Network error occurred while updating password', 'error');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
+                console.log('Using fallback activity data due to:', error);
             });
-        });
+        }
 
-        // Reset form function
-        function resetForm() {
-            if (confirm('Are you sure you want to reset all changes?')) {
-                loadUserProfile(); // Reload original data
-                showAlert('Form reset to original values', 'info');
+        // Update activity feed with real data
+        function updateActivityFeed(activities) {
+            const activityContainer = document.querySelector('.activity-item').parentNode;
+            
+            // Clear existing activities (keep first few as fallback)
+            const existingActivities = activityContainer.querySelectorAll('.activity-item');
+            if (activities.length > 0) {
+                // Remove all but keep structure
+                existingActivities.forEach((item, index) => {
+                    if (index > 0) item.remove();
+                });
+
+                // Add real activities
+                activities.slice(0, 6).forEach((activity, index) => {
+                    const activityElement = createActivityElement(activity);
+                    if (index === 0) {
+                        activityContainer.insertBefore(activityElement, activityContainer.firstChild);
+                    } else {
+                        activityContainer.appendChild(activityElement);
+                    }
+                });
             }
         }
 
-        // Email validation
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        // Add activity to timeline
-        function addActivityToTimeline(title, description, time) {
-            const timeline = document.querySelector('.activity-timeline');
-            const timelineItem = document.createElement('div');
-            timelineItem.className = 'timeline-item';
-            timelineItem.innerHTML = `
-                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">${title}</h6>
-                <p class="mb-1 text-muted small">${description}</p>
-                <small class="text-muted">${time}</small>
+        // Create activity element from Django data
+        function createActivityElement(activity) {
+            const div = document.createElement('div');
+            div.className = `activity-item ${activity.type || 'info'}`;
+            
+            const statusClass = getStatusClass(activity.status);
+            const badgeClass = getBadgeClass(activity.trust_level || activity.status);
+            const badgeText = activity.badge_text || activity.status;
+            
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1 fw-bold">
+                            <span class="status-indicator ${statusClass}"></span>
+                            ${activity.title}
+                        </h6>
+                        <p class="mb-1 text-muted">${activity.description}</p>
+                        <small class="text-muted">${formatTimeAgo(activity.timestamp)}</small>
+                    </div>
+                    <span class="trust-badge ${badgeClass}">${badgeText}</span>
+                </div>
             `;
             
-            // Add to top of timeline
-            timeline.insertBefore(timelineItem, timeline.firstChild);
+            return div;
+        }
+
+        // Helper functions for activity display
+        function getStatusClass(status) {
+            const statusMap = {
+                'SUCCESS': 'status-active',
+                'VERIFIED': 'status-active',
+                'ACTIVE': 'status-active',
+                'PENDING': 'status-expired',
+                'FLAGGED': 'status-revoked',
+                'FAILED': 'status-revoked'
+            };
+            return statusMap[status] || 'status-active';
+        }
+
+        function getBadgeClass(level) {
+            const badgeMap = {
+                'VERIFIED': 'trust-verified',
+                'GOLD': 'trust-verified',
+                'PREMIUM': 'trust-premium',
+                'BASIC': 'trust-basic',
+                'FLAGGED': 'trust-revoked',
+                'REVOKED': 'trust-revoked'
+            };
+            return badgeMap[level] || 'trust-premium';
+        }
+
+        function formatTimeAgo(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffInMinutes = Math.floor((now - time) / (1000 * 60));
             
-            // Remove last item if more than 3 activities
-            const items = timeline.querySelectorAll('.timeline-item');
-            if (items.length > 3) {
-                timeline.removeChild(items[items.length - 1]);
+            if (diffInMinutes < 1) return 'Just now';
+            if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+            if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`;
+            return `${Math.floor(diffInMinutes / 1440)} days ago`;
+        }
+
+        // Load system status from Django API
+        function loadSystemStatus() {
+            fetch('/api/drp/health-check/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateSystemStatus(data);
+            })
+            .catch(error => {
+                console.log('System status check failed:', error);
+            });
+        }
+
+        // Update system status indicators
+        function updateSystemStatus(data) {
+            const statusIndicators = document.querySelectorAll('.status-indicator');
+            
+            if (data.status === 'healthy') {
+                statusIndicators.forEach(indicator => {
+                    if (!indicator.classList.contains('status-expired')) {
+                        indicator.className = 'status-indicator status-active';
+                        const statusText = indicator.parentNode.querySelector('small');
+                        if (statusText && statusText.textContent !== 'Maintenance') {
+                            statusText.textContent = 'Operational';
+                        }
+                    }
+                });
+            } else if (data.issues && data.issues.length > 0) {
+                // Handle specific issues
+                console.log('System issues detected:', data.issues);
+            }
+        }
+
+        // Simulate real-time updates for stats (keep existing behavior)
+        function updateStats() {
+            const statsNumbers = document.querySelectorAll('.stats-number');
+            statsNumbers.forEach(stat => {
+                if (stat.textContent.includes('%')) {
+                    // For percentage values, slight variations
+                    const currentValue = parseFloat(stat.textContent);
+                    const variation = (Math.random() - 0.5) * 0.2;
+                    const newValue = Math.max(95, Math.min(100, currentValue + variation));
+                    stat.textContent = newValue.toFixed(1) + '%';
+                } else if (!stat.textContent.includes(',')) {
+                    // For small numbers, small variations
+                    const currentValue = parseInt(stat.textContent);
+                    const variation = Math.floor((Math.random() - 0.5) * 6);
+                    stat.textContent = Math.max(0, currentValue + variation);
+                } else {
+                    // For large numbers with commas
+                    const currentValue = parseInt(stat.textContent.replace(',', ''));
+                    const variation = Math.floor((Math.random() - 0.5) * 50);
+                    const newValue = Math.max(0, currentValue + variation);
+                    stat.textContent = newValue.toLocaleString();
+                }
+            });
+        }
+
+        // Add new activity items periodically (enhanced with Django data)
+        function addRecentActivity() {
+            // Try to get real-time updates
+            fetch('/api/drp/latest-activity/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.activity) {
+                    addActivityToFeed(data.activity);
+                }
+            })
+            .catch(error => {
+                // Fallback to mock activity
+                addMockActivity();
+            });
+        }
+
+        function addActivityToFeed(activity) {
+            const activityContainer = document.querySelector('.activity-item').parentNode;
+            const newActivity = createActivityElement(activity);
+            
+            // Add to top of activity list
+            activityContainer.insertBefore(newActivity, activityContainer.firstChild);
+
+            // Remove last item if more than 8 activities
+            const activities_list = activityContainer.querySelectorAll('.activity-item');
+            if (activities_list.length > 8) {
+                activityContainer.removeChild(activities_list[activities_list.length - 1]);
             }
 
             // Add entrance animation
-            timelineItem.style.opacity = '0';
-            timelineItem.style.transform = 'translateX(-20px)';
+            newActivity.style.opacity = '0';
+            newActivity.style.transform = 'translateX(-20px)';
             setTimeout(() => {
-                timelineItem.style.transition = 'all 0.6s ease';
-                timelineItem.style.opacity = '1';
-                timelineItem.style.transform = 'translateX(0)';
+                newActivity.style.transition = 'all 0.6s ease';
+                newActivity.style.opacity = '1';
+                newActivity.style.transform = 'translateX(0)';
             }, 100);
         }
 
-        // Logout confirmation
+        function addMockActivity() {
+            const activities = [
+                {
+                    type: 'verification',
+                    status: 'VERIFIED',
+                    title: 'Seller Verification Complete',
+                    description: 'New seller "Digital World" has been verified',
+                    badge_text: 'Verified',
+                    timestamp: new Date().toISOString()
+                },
+                {
+                    type: 'info',
+                    status: 'ACTIVE',
+                    title: 'QR Code Scan',
+                    description: 'QR-8832 scanned successfully',
+                    trust_level: 'PREMIUM',
+                    badge_text: 'Premium',
+                    timestamp: new Date(Date.now() - 60000).toISOString()
+                }
+            ];
+
+            const randomActivity = activities[Math.floor(Math.random() * activities.length)];
+            addActivityToFeed(randomActivity);
+        }
+
+        // Update stats every 30 seconds
+        setInterval(updateStats, 30000);
+
+        // Add new activity every 2 minutes
+        setInterval(addRecentActivity, 120000);
+
+        // Load real data every 5 minutes
+        setInterval(() => {
+            loadDashboardStats();
+            loadSellerStats();
+            loadSystemStatus();
+        }, 300000);
+
+        // System status checker
+        function updateSystemStatus() {
+            const statusItems = document.querySelectorAll('.status-indicator');
+            statusItems.forEach(indicator => {
+                // 95% chance to stay operational, 5% chance to show maintenance
+                if (Math.random() < 0.05) {
+                    indicator.className = 'status-indicator status-expired';
+                    indicator.parentNode.querySelector('small').textContent = 'Maintenance';
+                } else {
+                    indicator.className = 'status-indicator status-active';
+                    indicator.parentNode.querySelector('small').textContent = 'Operational';
+                }
+            });
+        }
+
+        // Update system status every 5 minutes
+        setInterval(updateSystemStatus, 300000);
+
+        // Click handlers for quick actions
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-walmart') && e.target.textContent.includes('View Reports')) {
+                e.preventDefault();
+                // Redirect to Django reports view
+                window.location.href = '/admin/reports/';
+            }
+            
+            if (e.target.closest('.btn-walmart') && e.target.textContent.includes('System Settings')) {
+                e.preventDefault();
+                // Redirect to Django admin settings
+                window.location.href = '/admin/settings/';
+            }
+        });
+
+        // Logout confirmation function
         function confirmLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 // Call Django logout endpoint
@@ -1070,35 +1270,15 @@
             }
         }
 
-        // Show alert function
-        function showAlert(message, type) {
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'warning' ? 'alert-warning' : 
-                              type === 'info' ? 'alert-info' : 'alert-danger';
-            
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.parentNode.removeChild(alertDiv);
-                }
-            }, 5000);
-        }
-
-        // Add entrance animations
+        // Add entrance animations on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Load user profile data
-            loadUserProfile();
+            // Load real data on page load
+            loadDashboardStats();
+            loadSellerStats();
+            loadRecentActivity();
+            loadSystemStatus();
 
-            const cards = document.querySelectorAll('.card-walmart');
+            const cards = document.querySelectorAll('.card-walmart, .stats-card');
             cards.forEach((card, index) => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(30px)';
@@ -1107,7 +1287,20 @@
                     card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
                     card.style.opacity = '1';
                     card.style.transform = 'translateY(0)';
-                }, index * 200);
+                }, index * 100);
+            });
+
+            // Animate activity items
+            const activityItems = document.querySelectorAll('.activity-item');
+            activityItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.4s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 800 + (index * 100));
             });
         });
     </script>
