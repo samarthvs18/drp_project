@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Walmart DRP</title>
+    <title>Seller Portal - Walmart DRP</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
@@ -11,6 +11,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     
     <style>
         :root {
@@ -219,7 +221,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: var(--blue-gradient);
+            background: var(--yellow-gradient);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -235,45 +237,108 @@
             transform: scaleX(1);
         }
 
-        /* Profile Avatar */
-        .profile-avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: var(--blue-gradient);
+        /* Stats Cards */
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: none;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stats-card.blue::before { background: var(--blue-gradient); }
+        .stats-card.green::before { background: var(--green-gradient); }
+        .stats-card.yellow::before { background: var(--yellow-gradient); }
+        .stats-card.orange::before { background: linear-gradient(135deg, var(--warning-orange), #d97706); }
+
+        .stats-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.8rem;
             color: white;
-            font-size: 4rem;
-            margin: 0 auto 2rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 113, 206, 0.3);
             transition: all 0.3s ease;
         }
 
-        .profile-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 113, 206, 0.4);
+        .stats-card:hover .stats-icon {
+            transform: scale(1.1);
         }
 
-        .profile-avatar::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s;
-            opacity: 0;
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--blue-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .profile-avatar:hover::before {
-            animation: shimmer 0.6s ease-in-out;
+        /* QR Code Display */
+        .qr-display {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
+
+        .qr-code-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Trust Level Badges */
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .trust-verified { background: var(--green-gradient); color: white; }
+        .trust-premium { background: var(--blue-gradient); color: white; }
+        .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
+        .trust-pending { background: linear-gradient(135deg, var(--warning-orange), #d97706); color: white; }
 
         /* Form Styles */
         .form-control-walmart {
@@ -348,76 +413,57 @@
             color: var(--walmart-blue);
         }
 
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger-red), #dc2626);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        .btn-success {
+            background: var(--green-gradient);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-danger:hover {
-            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.4);
+        .btn-success:hover {
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
         }
 
-        /* Trust Badge */
-        .trust-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: relative;
+        /* Progress Bar */
+        .progress-walmart {
+            height: 8px;
+            background: rgba(0, 113, 206, 0.1);
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .trust-verified { background: var(--green-gradient); color: white; }
-        .trust-premium { background: var(--blue-gradient); color: white; }
-        .trust-basic { background: var(--yellow-gradient); color: var(--walmart-blue); }
-
-        /* Activity Timeline */
-        .activity-timeline {
-            position: relative;
-            padding-left: 2rem;
+        .progress-bar-walmart {
+            background: var(--green-gradient);
+            border-radius: 10px;
+            transition: width 0.6s ease;
         }
 
-        .activity-timeline::before {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--blue-gradient);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 1.5rem;
+        /* Table Styles */
+        .table-walmart {
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-walmart thead {
+            background: var(--blue-gradient);
+            color: white;
+        }
+
+        .table-walmart th,
+        .table-walmart td {
+            padding: 1rem;
+            border: none;
+            vertical-align: middle;
+        }
+
+        .table-walmart tbody tr {
+            border-bottom: 1px solid rgba(0, 113, 206, 0.1);
             transition: all 0.3s ease;
         }
 
-        .timeline-item:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: translateX(10px);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2.2rem;
-            top: 1.5rem;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--success-green);
-            border: 3px solid white;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        .table-walmart tbody tr:hover {
+            background: rgba(0, 113, 206, 0.05);
+            transform: scale(1.01);
         }
 
         /* Footer */
@@ -493,10 +539,19 @@
                 padding: 1rem 0;
             }
 
-            .profile-avatar {
-                width: 120px;
-                height: 120px;
-                font-size: 3rem;
+            .stats-card {
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .stats-number {
+                font-size: 2rem;
+            }
+
+            .stats-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
             }
 
             .btn-walmart {
@@ -515,12 +570,12 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--blue-gradient);
+            background: var(--yellow-gradient);
             border-radius: 10px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--walmart-dark-blue);
+            background: var(--warning-orange);
         }
     </style>
 </head>
@@ -528,7 +583,7 @@
     <!-- Navigation Header -->
     <nav class="navbar navbar-expand-lg navbar-walmart fixed-top" id="mainNavbar">
         <div class="container">
-            <a class="navbar-brand" href="base.html">
+            <a class="navbar-brand" href="/">
                 <div class="walmart-logo">W</div>
                 Walmart DRP
             </a>
@@ -540,17 +595,17 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html">
+                        <a class="nav-link" href="/home/">
                             <i class="fas fa-home me-2"></i>Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="verify.html">
+                        <a class="nav-link" href="/verify/">
                             <i class="fas fa-qrcode me-2"></i>Verify QR
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="seller_portal.html">
+                        <a class="nav-link active" href="/seller-portal/">
                             <i class="fas fa-store me-2"></i>Seller Portal
                         </a>
                     </li>
@@ -558,14 +613,14 @@
                 
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-2"></i>Account
                         </a>
                         <ul class="dropdown-menu glass-card">
                             <li><a class="dropdown-item" href="profile.html"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
                             <li><a class="dropdown-item" href="settings.html"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -580,178 +635,313 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="card-walmart p-4">
-                        <div class="d-flex align-items-center">
-                            <div style="background: var(--blue-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
-                                <i class="fas fa-user-circle" style="font-size: 1.5rem; color: white;"></i>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div style="background: var(--yellow-gradient); width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                                    <i class="fas fa-store" style="font-size: 1.5rem; color: var(--walmart-blue);"></i>
+                                </div>
+                                <div>
+                                    <h2 class="mb-1 fw-bold" style="background: var(--yellow-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                                        Seller Portal
+                                    </h2>
+                                    <p class="mb-0 text-muted">Manage your digital reputation and QR codes</p>
+                                </div>
                             </div>
                             <div>
-                                <h2 class="mb-1 fw-bold" style="background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                                    User Profile
-                                </h2>
-                                <p class="mb-0 text-muted">Manage your account information and preferences</p>
+                                <span class="trust-badge trust-verified">
+                                    <i class="fas fa-shield-alt me-2"></i>Verified Seller
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Stats Cards -->
+            <div class="row mb-5">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card blue">
+                        <div class="stats-icon" style="background: var(--blue-gradient);">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <div class="stats-number">12</div>
+                        <h6 class="fw-bold mb-2">Active QR Codes</h6>
+                        <p class="text-muted mb-0">Currently in use</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card green">
+                        <div class="stats-icon" style="background: var(--green-gradient);">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stats-number">2,847</div>
+                        <h6 class="fw-bold mb-2">Total Scans</h6>
+                        <p class="text-muted mb-0">This month</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card yellow">
+                        <div class="stats-icon" style="background: var(--yellow-gradient);">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stats-number">4.8</div>
+                        <h6 class="fw-bold mb-2">Trust Rating</h6>
+                        <p class="text-muted mb-0">Out of 5.0</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stats-card orange">
+                        <div class="stats-icon" style="background: linear-gradient(135deg, var(--warning-orange), #d97706);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stats-number">+24%</div>
+                        <h6 class="fw-bold mb-2">Growth</h6>
+                        <p class="text-muted mb-0">Since last month</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
             <div class="row">
-                <!-- Profile Information -->
+                <!-- QR Code Management -->
                 <div class="col-lg-8 mb-4">
+                    <!-- Generate New QR Code -->
                     <div class="card-walmart p-4 mb-4">
                         <h5 class="fw-bold mb-4">
-                            <i class="fas fa-edit me-2" style="color: var(--walmart-blue);"></i>
-                            Personal Information
+                            <i class="fas fa-plus-circle me-2" style="color: var(--success-green);"></i>
+                            Generate New QR Code
                         </h5>
-                        
-                        <form id="profileForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">First Name</label>
-                                    <input type="text" class="form-control form-control-walmart" id="firstName" value="John">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Product/Service Name</label>
+                                    <input type="text" class="form-control form-control-walmart" id="product-name" placeholder="Enter product or service name">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Last Name</label>
-                                    <input type="text" class="form-control form-control-walmart" id="lastName" value="Anderson">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Email Address</label>
-                                    <input type="email" class="form-control form-control-walmart" id="email" value="john.anderson@walmart.com">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Phone Number</label>
-                                    <input type="tel" class="form-control form-control-walmart" id="phone" value="+1 (555) 123-4567">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Department</label>
-                                    <select class="form-control form-control-walmart" id="department">
-                                        <option>Digital Verification</option>
-                                        <option>Seller Management</option>
-                                        <option>Security & Compliance</option>
-                                        <option>Admin Operations</option>
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Category</label>
+                                    <select class="form-control form-control-walmart" id="product-category">
+                                        <option>Electronics</option>
+                                        <option>Clothing</option>
+                                        <option>Home & Garden</option>
+                                        <option>Beauty & Health</option>
+                                        <option>Sports & Outdoors</option>
+                                        <option>Other</option>
                                     </select>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label-walmart">Employee ID</label>
-                                    <input type="text" class="form-control form-control-walmart" id="employeeId" value="WM-45789" readonly>
+                                <div class="mb-3">
+                                    <label class="form-label-walmart">Description</label>
+                                    <textarea class="form-control form-control-walmart" id="product-description" rows="3" placeholder="Brief description of the product/service"></textarea>
+                                </div>
+                                <button class="btn btn-success" onclick="generateQR()">
+                                    <i class="fas fa-magic me-2"></i>Generate QR Code
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="qr-display" id="qr-display">
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-qrcode" style="font-size: 4rem; color: var(--walmart-blue); opacity: 0.3;"></i>
+                                        <p class="text-muted mt-3">QR code will appear here</p>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <div class="d-flex gap-3">
-                                <button type="submit" class="btn btn-walmart">
-                                    <i class="fas fa-save me-2"></i>Save Changes
-                                </button>
-                                <button type="button" class="btn btn-walmart-yellow" onclick="resetForm()">
-                                    <i class="fas fa-undo me-2"></i>Reset
-                                </button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
 
-                    <!-- Change Password -->
+                    <!-- QR Code List -->
                     <div class="card-walmart p-4">
                         <h5 class="fw-bold mb-4">
-                            <i class="fas fa-key me-2" style="color: var(--warning-orange);"></i>
-                            Change Password
+                            <i class="fas fa-list me-2" style="color: var(--walmart-blue);"></i>
+                            Your QR Codes
                         </h5>
-                        
-                        <form id="passwordForm">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">Current Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="currentPassword" placeholder="Enter current password">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">New Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="newPassword" placeholder="Enter new password">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label class="form-label-walmart">Confirm Password</label>
-                                    <input type="password" class="form-control form-control-walmart" id="confirmPassword" placeholder="Confirm new password">
-                                </div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-shield-alt me-2"></i>Update Password
-                            </button>
-                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-walmart">
+                                <thead>
+                                    <tr>
+                                        <th>QR Code</th>
+                                        <th>Product/Service</th>
+                                        <th>Scans</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>QR-7749</strong></td>
+                                        <td>Premium Headphones</td>
+                                        <td>1,247</td>
+                                        <td><span class="trust-badge trust-verified" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-7749')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-7749')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-7749')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>QR-8832</strong></td>
+                                        <td>Wireless Charger</td>
+                                        <td>856</td>
+                                        <td><span class="trust-badge trust-verified" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Active</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-8832')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-8832')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-8832')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>QR-9441</strong></td>
+                                        <td>Smart Watch</td>
+                                        <td>744</td>
+                                        <td><span class="trust-badge trust-pending" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Pending</span></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('QR-9441')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('QR-9441')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('QR-9441')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Profile Sidebar -->
+                <!-- Seller Profile & Analytics -->
                 <div class="col-lg-4">
-                    <!-- Profile Avatar -->
-                    <div class="card-walmart p-4 mb-4 text-center">
-                        <div class="profile-avatar">
-                            <i class="fas fa-user"></i>
+                    <!-- Seller Profile -->
+                    <div class="card-walmart p-4 mb-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="fas fa-user-circle me-2" style="color: var(--walmart-blue);"></i>
+                            Seller Profile
+                        </h5>
+                        <div class="text-center mb-4">
+                            <div style="width: 80px; height: 80px; background: var(--blue-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: white; font-size: 2rem;">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <h6 class="fw-bold">TechMart Electronics</h6>
+                            <p class="text-muted mb-2">Verified since Jan 2023</p>
+                            <span class="trust-badge trust-verified">
+                                <i class="fas fa-shield-alt me-2"></i>Verified Seller
+                            </span>
                         </div>
-                        <h4 class="fw-bold mb-2">John Anderson</h4>
-                        <p class="text-muted mb-3">Digital Verification Specialist</p>
-                        <span class="trust-badge trust-verified">
-                            <i class="fas fa-shield-alt me-2"></i>Verified Employee
-                        </span>
                         
-                        <div class="mt-4">
-                            <button class="btn btn-walmart-yellow btn-sm">
-                                <i class="fas fa-camera me-2"></i>Change Photo
+                        <div class="mb-3">
+                            <label class="form-label-walmart">Trust Level Progress</label>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 85%"></div>
+                            </div>
+                            <small class="text-muted">85% - Premium Level</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-walmart">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </button>
+                            <button class="btn btn-walmart-yellow">
+                                <i class="fas fa-certificate me-2"></i>Upgrade to Premium
                             </button>
                         </div>
                     </div>
 
-                    <!-- Account Statistics -->
+                    <!-- Quick Analytics -->
                     <div class="card-walmart p-4 mb-4">
                         <h6 class="fw-bold mb-3">
                             <i class="fas fa-chart-bar me-2" style="color: var(--success-green);"></i>
-                            Account Statistics
+                            Quick Analytics
                         </h6>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <small>Profile Completion</small>
-                                <small>95%</small>
+                                <small>Weekly Scans</small>
+                                <small>724 (+12%)</small>
                             </div>
-                            <div class="progress" style="height: 6px; background: rgba(0, 113, 206, 0.1); border-radius: 10px;">
-                                <div class="progress-bar" style="width: 95%; background: var(--green-gradient); border-radius: 10px;"></div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 78%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <small>Security Score</small>
-                                <small>88%</small>
+                                <small>Trust Score</small>
+                                <small>4.8/5.0</small>
                             </div>
-                            <div class="progress" style="height: 6px; background: rgba(0, 113, 206, 0.1); border-radius: 10px;">
-                                <div class="progress-bar" style="width: 88%; background: var(--blue-gradient); border-radius: 10px;"></div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 96%"></div>
                             </div>
                         </div>
-                        <div class="text-center mt-4">
-                            <small class="text-muted">
-                                <i class="fas fa-calendar me-1"></i>
-                                Member since January 2023
-                            </small>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small>Verification Rate</small>
+                                <small>98.2%</small>
+                            </div>
+                            <div class="progress-walmart">
+                                <div class="progress-bar-walmart" style="width: 98%"></div>
+                            </div>
                         </div>
+                        <button class="btn btn-walmart btn-sm w-100">
+                            <i class="fas fa-chart-line me-2"></i>View Full Report
+                        </button>
                     </div>
 
                     <!-- Recent Activity -->
                     <div class="card-walmart p-4">
                         <h6 class="fw-bold mb-3">
-                            <i class="fas fa-clock me-2" style="color: var(--walmart-blue);"></i>
+                            <i class="fas fa-clock me-2" style="color: var(--warning-orange);"></i>
                             Recent Activity
                         </h6>
-                        <div class="activity-timeline">
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Profile Updated</h6>
-                                <p class="mb-1 text-muted small">Changed phone number</p>
-                                <small class="text-muted">2 hours ago</small>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <div class="activity-item p-3 mb-3" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-green); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">QR-7749 Scanned</h6>
+                                        <p class="mb-1 text-muted small">Premium Headphones verified</p>
+                                        <small class="text-muted">5 min ago</small>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Password Changed</h6>
-                                <small class="text-muted">1 day ago</small>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(0, 113, 206, 0.1); border-left: 3px solid var(--walmart-blue); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">New QR Generated</h6>
+                                        <p class="mb-1 text-muted small">QR-9441 for Smart Watch</p>
+                                        <small class="text-muted">2 hours ago</small>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <div class="timeline-item">
-                                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Settings Modified</h6>
-                                <p class="mb-1 text-muted small">Notification preferences updated</p>
-                                <small class="text-muted">3 days ago</small>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--warning-orange); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Profile Updated</h6>
+                                        <p class="mb-1 text-muted small">Business information modified</p>
+                                        <small class="text-muted">1 day ago</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="activity-item p-3 mb-3" style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success-green); border-radius: 0 10px 10px 0;">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">Trust Score Increased</h6>
+                                        <p class="mb-1 text-muted small">Rating improved to 4.8/5.0</p>
+                                        <small class="text-muted">2 days ago</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -809,307 +999,340 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // Get CSRF token for Django
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+        // COMPLETE SCRIPT REPLACEMENT - Replace your entire <script> section with this:
+
+// Navbar scroll effect
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('mainNavbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// QR Code generation counter
+let qrCounter = 1000;
+
+// Show alert function - MUST BE DEFINED FIRST
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                      type === 'warning' ? 'alert-warning' : 
+                      type === 'info' ? 'alert-info' : 'alert-danger';
+    
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
         }
+    }, 5000);
+}
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('mainNavbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+// Generate QR Code functionality - WORKING VERSION
+function generateQR() {
+    const productName = document.getElementById('product-name').value;
+    const category = document.getElementById('product-category').value;
+    const description = document.getElementById('product-description').value;
 
-        // Load user profile data from Django
-        function loadUserProfile() {
-            fetch('/api/user/profile/', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.user) {
-                    populateProfileForm(data.user);
-                    updateProfileDisplay(data.user);
-                }
-            })
-            .catch(error => {
-                console.log('Failed to load profile data:', error);
-                // Keep existing mock data as fallback
-            });
-        }
+    if (!productName.trim()) {
+        showAlert('Please enter a product/service name', 'warning');
+        return;
+    }
 
-        // Populate form with user data
-        function populateProfileForm(user) {
-            if (user.first_name) document.getElementById('firstName').value = user.first_name;
-            if (user.last_name) document.getElementById('lastName').value = user.last_name;
-            if (user.email) document.getElementById('email').value = user.email;
-            if (user.phone) document.getElementById('phone').value = user.phone;
-            if (user.department) document.getElementById('department').value = user.department;
-            if (user.employee_id) document.getElementById('employeeId').value = user.employee_id;
-        }
+    // Generate unique QR code
+    qrCounter++;
+    const qrCode = `QR-${qrCounter}`;
+    const qrData = `https://walmart-drp.com/verify/${qrCode}?product=${encodeURIComponent(productName)}`;
+    
+    // Show loading
+    const qrDisplay = document.getElementById('qr-display');
+    qrDisplay.innerHTML = `
+        <div class="text-center py-4">
+            <div class="loading-spinner mx-auto mb-3" style="width: 40px; height: 40px; border-width: 3px;"></div>
+            <p class="text-muted">Generating QR code...</p>
+        </div>
+    `;
 
-        // Update profile display
-        function updateProfileDisplay(user) {
-            const fullName = `${user.first_name || 'John'} ${user.last_name || 'Anderson'}`;
-            const nameElements = document.querySelectorAll('h4.fw-bold');
-            nameElements.forEach(el => {
-                if (el.textContent.includes('John Anderson')) {
-                    el.textContent = fullName;
-                }
-            });
-
-            if (user.department) {
-                const jobTitle = document.querySelector('p.text-muted');
-                if (jobTitle && jobTitle.textContent.includes('Specialist')) {
-                    jobTitle.textContent = `${user.department} Specialist`;
-                }
-            }
-        }
-
-        // Handle profile form submission
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Generate QR code using API
+    setTimeout(() => {
+        try {
+            // Clear the display
+            qrDisplay.innerHTML = '';
             
-            const formData = {
-                first_name: document.getElementById('firstName').value,
-                last_name: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                department: document.getElementById('department').value
+            // Create QR code container
+            const qrContainer = document.createElement('div');
+            qrContainer.className = 'qr-code-container';
+            qrContainer.id = 'qr-code-canvas';
+            
+            // Create image element for QR code using QR Server API
+            const qrImage = document.createElement('img');
+            qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrData)}&color=0071ce&bgcolor=ffffff`;
+            qrImage.alt = `QR Code for ${qrCode}`;
+            qrImage.style.cssText = 'max-width: 200px; height: 200px; border: 2px solid #0071ce; border-radius: 10px;';
+            qrImage.id = 'qr-image';
+            
+            // Add loading handler for the image
+            qrImage.onload = function() {
+                console.log('QR Code image loaded successfully');
+                showAlert(`QR code ${qrCode} generated successfully!`, 'success');
             };
-
-            // Validate email
-            if (!isValidEmail(formData.email)) {
-                showAlert('Please enter a valid email address', 'error');
-                return;
-            }
-
-            // Show loading
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
-            submitBtn.disabled = true;
-
-            // Update profile via Django API
-            fetch('/api/user/profile/', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Profile updated successfully!', 'success');
-                    updateProfileDisplay(data.user);
-                } else {
-                    showAlert(data.message || 'Failed to update profile', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Profile update error:', error);
-                showAlert('Network error occurred while updating profile', 'error');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-
-        // Handle password change
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
             
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            // Validate passwords
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                showAlert('Please fill in all password fields', 'warning');
-                return;
-            }
-
-            if (newPassword !== confirmPassword) {
-                showAlert('New passwords do not match', 'error');
-                return;
-            }
-
-            if (newPassword.length < 8) {
-                showAlert('New password must be at least 8 characters long', 'error');
-                return;
-            }
-
-            // Show loading
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
-            submitBtn.disabled = true;
-
-            // Update password via Django API
-            fetch('/api/user/change-password/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({
-                    current_password: currentPassword,
-                    new_password: newPassword
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    showAlert('Password updated successfully!', 'success');
-                    document.getElementById('passwordForm').reset();
-                    addActivityToTimeline('Password Changed', 'Security credentials updated', 'Just now');
-                } else {
-                    showAlert(data.message || 'Failed to update password', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Password update error:', error);
-                showAlert('Network error occurred while updating password', 'error');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        });
-
-        // Reset form function
-        function resetForm() {
-            if (confirm('Are you sure you want to reset all changes?')) {
-                loadUserProfile(); // Reload original data
-                showAlert('Form reset to original values', 'info');
-            }
-        }
-
-        // Email validation
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        // Add activity to timeline
-        function addActivityToTimeline(title, description, time) {
-            const timeline = document.querySelector('.activity-timeline');
-            const timelineItem = document.createElement('div');
-            timelineItem.className = 'timeline-item';
-            timelineItem.innerHTML = `
-                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;">${title}</h6>
-                <p class="mb-1 text-muted small">${description}</p>
-                <small class="text-muted">${time}</small>
+            qrImage.onerror = function() {
+                console.error('Failed to load QR code image');
+                qrDisplay.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ef4444; opacity: 0.3;"></i>
+                        <p class="text-muted mt-3">Error loading QR code image</p>
+                    </div>
+                `;
+                showAlert('Error generating QR code', 'error');
+            };
+            
+            qrContainer.appendChild(qrImage);
+            qrDisplay.appendChild(qrContainer);
+            
+            // Add QR code info below the image
+            const infoDiv = document.createElement('div');
+            infoDiv.innerHTML = `
+                <h6 class="fw-bold mb-2 mt-3">${qrCode}</h6>
+                <p class="text-muted mb-2">${productName}</p>
+                <small class="text-muted">${category}</small>
+                <div class="mt-3">
+                    <button class="btn btn-walmart btn-sm me-2" onclick="downloadQR('${qrCode}', '${qrData}')">
+                        <i class="fas fa-download me-1"></i>Download
+                    </button>
+                    <button class="btn btn-walmart-yellow btn-sm" onclick="printQR('${qrCode}', '${qrData}')">
+                        <i class="fas fa-print me-1"></i>Print
+                    </button>
+                </div>
             `;
-            
-            // Add to top of timeline
-            timeline.insertBefore(timelineItem, timeline.firstChild);
-            
-            // Remove last item if more than 3 activities
-            const items = timeline.querySelectorAll('.timeline-item');
-            if (items.length > 3) {
-                timeline.removeChild(items[items.length - 1]);
-            }
+            qrDisplay.appendChild(infoDiv);
 
-            // Add entrance animation
-            timelineItem.style.opacity = '0';
-            timelineItem.style.transform = 'translateX(-20px)';
-            setTimeout(() => {
-                timelineItem.style.transition = 'all 0.6s ease';
-                timelineItem.style.opacity = '1';
-                timelineItem.style.transform = 'translateX(0)';
-            }, 100);
-        }
-
-        // Logout confirmation
-        function confirmLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                // Call Django logout endpoint
-                fetch('/api/auth/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/login/';
-                    } else {
-                        // Fallback logout
-                        window.location.href = '/logout/';
-                    }
-                })
-                .catch(error => {
-                    console.error('Logout error:', error);
-                    // Fallback logout
-                    window.location.href = '/logout/';
-                });
-            }
-        }
-
-        // Show alert function
-        function showAlert(message, type) {
-            const alertClass = type === 'success' ? 'alert-success' : 
-                              type === 'warning' ? 'alert-warning' : 
-                              type === 'info' ? 'alert-info' : 'alert-danger';
+            // Add to table
+            addQRToTable(qrCode, productName, category, description);
             
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
-            alertDiv.style.cssText = 'top: 120px; right: 20px; z-index: 9999; min-width: 300px;';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            // Clear form
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-description').value = '';
+            
+        } catch (error) {
+            console.error('QR Generation Error:', error);
+            qrDisplay.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #ef4444; opacity: 0.3;"></i>
+                    <p class="text-muted mt-3">Error generating QR code: ${error.message}</p>
+                </div>
             `;
-            
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.parentNode.removeChild(alertDiv);
-                }
-            }, 5000);
+            showAlert('Error generating QR code', 'error');
         }
+    }, 1500);
+}
 
-        // Add entrance animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load user profile data
-            loadUserProfile();
+// Add QR to table
+function addQRToTable(qrCode, productName, category, description) {
+    const tableBody = document.querySelector('.table-walmart tbody');
+    if (tableBody) {
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><strong>${qrCode}</strong></td>
+            <td>${productName}</td>
+            <td>0</td>
+            <td><span class="trust-badge trust-pending" style="font-size: 0.7rem; padding: 0.3rem 0.8rem;">Pending</span></td>
+            <td>
+                <button class="btn btn-sm btn-walmart me-1" onclick="viewQR('${qrCode}')">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-walmart-yellow me-1" onclick="editQR('${qrCode}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteQR('${qrCode}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tableBody.insertBefore(newRow, tableBody.firstChild);
+    }
+}
 
-            const cards = document.querySelectorAll('.card-walmart');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                
-                setTimeout(() => {
-                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 200);
-            });
-        });
+// QR Code actions
+function viewQR(qrCode) {
+    showAlert(`Viewing details for ${qrCode}`, 'info');
+}
+
+function editQR(qrCode) {
+    showAlert(`Edit functionality for ${qrCode} - Coming soon!`, 'info');
+}
+
+function deleteQR(qrCode) {
+    if (confirm(`Are you sure you want to delete ${qrCode}?`)) {
+        showAlert(`${qrCode} deleted successfully`, 'success');
+        // Remove from table
+        const row = event.target.closest('tr');
+        if (row) row.remove();
+    }
+}
+
+function downloadQR(qrCode, qrData) {
+    try {
+        const qrImage = document.querySelector('#qr-image');
+        if (qrImage && qrImage.complete) {
+            // Create a canvas to convert the image for download
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200;
+            canvas.height = 200;
+            
+            // Draw the image to canvas
+            ctx.drawImage(qrImage, 0, 0, 200, 200);
+            
+            // Download the canvas as PNG
+            const link = document.createElement('a');
+            link.download = `${qrCode}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            showAlert(`${qrCode} downloaded successfully`, 'success');
+        } else {
+            // Fallback: download directly from API
+            const link = document.createElement('a');
+            link.download = `${qrCode}.png`;
+            link.href = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrData)}&color=0071ce&bgcolor=ffffff`;
+            link.click();
+            
+            showAlert(`${qrCode} downloaded successfully`, 'success');
+        }
+    } catch (error) {
+        console.error('Download error:', error);
+        showAlert('Error downloading QR code', 'error');
+    }
+}
+
+function printQR(qrCode, qrData) {
+    try {
+        const qrImage = document.querySelector('#qr-image');
+        if (qrImage && qrImage.complete) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print ${qrCode}</title>
+                        <style>
+                            body { 
+                                text-align: center; 
+                                font-family: Arial, sans-serif; 
+                                margin: 20px;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                min-height: 100vh;
+                            }
+                            h2 { 
+                                color: #0071ce; 
+                                margin-bottom: 20px; 
+                                font-size: 2rem;
+                            }
+                            img { 
+                                max-width: 300px; 
+                                border: 3px solid #0071ce; 
+                                padding: 15px; 
+                                border-radius: 15px;
+                                background: white;
+                            }
+                            p { 
+                                color: #666; 
+                                margin-top: 20px; 
+                                font-size: 1.2rem;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>${qrCode}</h2>
+                        <img src="${qrImage.src}" alt="QR Code" onload="window.print(); setTimeout(() => window.close(), 1000);">
+                        <p>Generated by Walmart DRP System</p>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        } else {
+            showAlert('QR code not found for printing', 'error');
+        }
+    } catch (error) {
+        console.error('Print error:', error);
+        showAlert('Error printing QR code', 'error');
+    }
+}
+
+// Update stats dynamically
+function updateStats() {
+    const statsNumbers = document.querySelectorAll('.stats-number');
+    statsNumbers.forEach(stat => {
+        if (stat.textContent.includes('%')) {
+            const currentValue = parseFloat(stat.textContent.replace('%', '').replace('+', ''));
+            const variation = (Math.random() - 0.5) * 2;
+            const newValue = Math.max(0, Math.min(100, currentValue + variation));
+            stat.textContent = newValue >= 0 ? `+${newValue.toFixed(0)}%` : `${newValue.toFixed(0)}%`;
+        } else if (stat.textContent.includes('.')) {
+            const currentValue = parseFloat(stat.textContent);
+            const variation = (Math.random() - 0.5) * 0.1;
+            const newValue = Math.max(1, Math.min(5, currentValue + variation));
+            stat.textContent = newValue.toFixed(1);
+        } else if (!stat.textContent.includes(',') && parseInt(stat.textContent) < 100) {
+            const currentValue = parseInt(stat.textContent);
+            const variation = Math.floor((Math.random() - 0.5) * 2);
+            stat.textContent = Math.max(0, currentValue + variation);
+        } else if (stat.textContent.includes(',')) {
+            const currentValue = parseInt(stat.textContent.replace(',', ''));
+            const variation = Math.floor((Math.random() - 0.5) * 20);
+            const newValue = Math.max(0, currentValue + variation);
+            stat.textContent = newValue.toLocaleString();
+        }
+    });
+}
+
+// Update stats every 45 seconds
+setInterval(updateStats, 45000);
+
+// Add entrance animations
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card-walmart, .stats-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+
+// Add CSS for loading spinner
+const style = document.createElement('style');
+style.textContent = `
+    .loading-spinner {
+        border: 3px solid rgba(255, 194, 32, 0.2);
+        border-top: 3px solid #ffc220;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
     </script>
 </body>
 </html>
