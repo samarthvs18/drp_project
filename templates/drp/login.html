@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Walmart DRP</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --walmart-blue: #0071ce;
+            --walmart-yellow: #ffc220;
+            --walmart-dark-blue: #004c91;
+            --walmart-light-blue: #e6f3ff;
+            --walmart-gray: #f8fafc;
+            --walmart-dark-gray: #2d3748;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --purple-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --blue-gradient: linear-gradient(135deg, #0071ce 0%, #004c91 100%);
+            --yellow-gradient: linear-gradient(135deg, #ffc220 0%, #f59e0b 100%);
+            --green-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            color: var(--walmart-dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 194, 32, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 113, 206, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0); }
+            33% { transform: translateX(-20px) translateY(-10px); }
+            66% { transform: translateX(20px) translateY(10px); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 194, 32, 0.6);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { width: 10px; height: 10px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 15px; height: 15px; left: 20%; animation-delay: 2s; }
+        .particle:nth-child(3) { width: 8px; height: 8px; left: 70%; animation-delay: 4s; }
+        .particle:nth-child(4) { width: 12px; height: 12px; left: 80%; animation-delay: 1s; }
+        .particle:nth-child(5) { width: 6px; height: 6px; left: 90%; animation-delay: 3s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            50% { transform: translateY(-100px) rotate(180deg); }
+        }
+
+        /* Glass Morphism Login Card */
+        .login-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--yellow-gradient);
+            border-radius: 24px 24px 0 0;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .walmart-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--yellow-gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 800;
+            color: var(--walmart-blue);
+            font-size: 2rem;
+            box-shadow: 0 15px 35px rgba(255, 194, 32, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .walmart-logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .walmart-logo:hover {
+            transform: scale(1.05) rotateY(10deg);
+            box-shadow: 0 20px 40px rgba(255, 194, 32, 0.5);
+        }
+
+        .walmart-logo:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        }
+
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            background: var(--blue-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo-subtitle {
+            color: var(--walmart-dark-gray);
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--walmart-dark-gray);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--walmart-blue);
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--success-green);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control::placeholder {
+            color: rgba(45, 55, 72, 0.5);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--walmart-blue);
+            z-index: 5;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--success-green);
+        }
+
+        /* Remember Me */
+        .remember-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .custom-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--walmart-dark-gray);
+        }
+
+        .custom-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--walmart-blue);
+        }
+
+        .forgot-password {
+            color: var(--walmart-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: var(--success-green);
+        }
+
+        /* Login Button */
+        .btn-login {
+            background: var(--blue-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 113, 206, 0.3);
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 113, 206, 0.4);
+            color: white;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert Styles */
+        .alert-custom {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-red);
+            border-left: 4px solid var(--danger-red);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+            border-left: 4px solid var(--success-green);
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            color: rgba(45, 55, 72, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: var(--walmart-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-footer a:hover {
+            color: var(--success-green);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .walmart-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--warning-orange);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--danger-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="walmart-logo">W</div>
+                <h1 class="logo-text">Walmart DRP</h1>
+                <p class="logo-subtitle">Digital Reputation Platform</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Employee Email
+                    </label>
+                    <input 
+                        type="email" 
+                        class="form-control" 
+                        id="email" 
+                        name="email"
+                        placeholder="Enter your employee email"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div style="position: relative;">
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            id="password" 
+                            name="password"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <i class="fas fa-eye password-toggle" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="remember-section">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-password" onclick="handleForgotPassword()">Forgot Password?</a>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" class="btn btn-login" id="loginBtn">
+                    <span id="loginBtnText">
+                        <i class="fas fa-sign-in-alt me-2"></i>
+                        Sign In
+                    </span>
+                </button>
+
+                <!-- Additional Links -->
+                <div class="login-footer">
+                    <p>Need help? <a href="#" onclick="showHelp()">Contact Support</a></p>
+                    <p class="mt-2">&copy; 2025 Walmart Inc. All rights reserved.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Get CSRF token for Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('togglePassword');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Show alert function
+        function showAlert(message, type = 'danger') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass} alert-custom alert-dismissible fade show" role="alert">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                const alert = alertContainer.querySelector('.alert');
+                if (alert) {
+                    alert.classList.add('fade');
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Set loading state
+        function setLoadingState(isLoading) {
+            const loginBtn = document.getElementById('loginBtn');
+            const loginBtnText = document.getElementById('loginBtnText');
+            
+            if (isLoading) {
+                loginBtn.disabled = true;
+                loginBtnText.innerHTML = '<span class="spinner me-2"></span>Signing In...';
+            } else {
+                loginBtn.disabled = false;
+                loginBtnText.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Sign In';
+            }
+        }
+
+        // Validate form inputs
+        function validateForm(email, password) {
+            const errors = [];
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email) {
+                errors.push('Email is required');
+            } else if (!emailRegex.test(email)) {
+                errors.push('Please enter a valid email address');
+            }
+            
+            // Password validation
+            if (!password) {
+                errors.push('Password is required');
+            } else if (password.length < 6) {
+                errors.push('Password must be at least 6 characters long');
+            }
+            
+            return errors;
+        }
+
+        // Handle login form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Clear previous alerts
+            document.getElementById('alertContainer').innerHTML = '';
+            
+            // Validate form
+            const errors = validateForm(email, password);
+            if (errors.length > 0) {
+                showAlert(errors.join('<br>'), 'danger');
+                return;
+            }
+            
+            // Set loading state
+            setLoadingState(true);
+            
+            // Prepare login data
+            const loginData = {
+                email: email,
+                password: password,
+                remember_me: rememberMe
+            };
+            
+            // For demo purposes, we'll simulate authentication
+            // In a real application, you would make an API call to your backend
+            simulateLogin(loginData);
+        });
+
+        // Simulate login process (replace with actual API call)
+        function simulateLogin(loginData) {
+            // Demo credentials for testing
+            const validCredentials = [
+                { email: 'admin@walmart.com', password: 'admin123' },
+                { email: 'employee@walmart.com', password: 'emp123' },
+                { email: 'manager@walmart.com', password: 'manager123' },
+                { email: 'test@walmart.com', password: 'test123' }
+            ];
+            
+            // Simulate network delay
+            setTimeout(() => {
+                const isValid = validCredentials.some(cred => 
+                    cred.email === loginData.email && cred.password === loginData.password
+                );
+                
+                if (isValid) {
+                    // Store session data
+                    const userData = {
+                        email: loginData.email,
+                        isLoggedIn: true,
+                        loginTime: new Date().toISOString(),
+                        rememberMe: loginData.remember_me
+                    };
+                    
+                    // Store in sessionStorage (or localStorage if remember me is checked)
+                    if (loginData.remember_me) {
+                        localStorage.setItem('walmartDRPUser', JSON.stringify(userData));
+                    } else {
+                        sessionStorage.setItem('walmartDRPUser', JSON.stringify(userData));
+                    }
+                    
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to base.html after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'base.html';
+                    }, 1500);
+                } else {
+                    showAlert('Invalid email or password. Please try again.', 'danger');
+                    setLoadingState(false);
+                }
+            }, 1000);
+        }
+
+        // Real API login function (uncomment and modify for actual backend)
+        /*
+        function performLogin(loginData) {
+            fetch('/api/auth/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(loginData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                setLoadingState(false);
+                
+                if (data.success) {
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Store user data
+                    const userData = {
+                        email: loginData.email,
+                        isLoggedIn: true,
+                        loginTime: new Date().toISOString(),
+                        userData: data.user,
+                        token: data.token
+                    };
+                    
+                    if (loginData.remember_me) {
+                        localStorage.setItem('walmartDRPUser', JSON.stringify(userData));
+                    } else {
+                        sessionStorage.setItem('walmartDRPUser', JSON.stringify(userData));
+                    }
+                    
+                    setTimeout(() => {
+                        window.location.href = 'base.html';
+                    }, 1500);
+                } else {
+                    showAlert(data.message || 'Login failed. Please try again.', 'danger');
+                }
+            })
+            .catch(error => {
+                setLoadingState(false);
+                console.error('Login error:', error);
+                showAlert('Network error. Please check your connection and try again.', 'danger');
+            });
+        }
+        */
+
+        // Handle forgot password
+        function handleForgotPassword() {
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                showAlert('Please enter your email address first', 'danger');
+                return;
+            }
+            
+            // Simulate forgot password request
+            showAlert('Password reset instructions have been sent to your email.', 'success');
+            
+            // In a real application, you would make an API call here
+            /*
+            fetch('/api/auth/forgot-password/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Password reset instructions have been sent to your email.', 'success');
+                } else {
+                    showAlert(data.message || 'Error sending reset email.', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Forgot password error:', error);
+                showAlert('Network error. Please try again.', 'danger');
+            });
+            */
+        }
+
+        // Show help function
+        function showHelp() {
+            showAlert('For technical support, please contact IT at ext. 1234 or email support@walmart.com', 'success');
+        }
+
+        // Check if user is already logged in
+        function checkExistingSession() {
+            const userData = localStorage.getItem('walmartDRPUser') || sessionStorage.getItem('walmartDRPUser');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user.isLoggedIn) {
+                        // User is already logged in, redirect to base.html
+                        window.location.href = 'base.html';
+                    }
+                } catch (error) {
+                    // Invalid session data, clear it
+                    localStorage.removeItem('walmartDRPUser');
+                    sessionStorage.removeItem('walmartDRPUser');
+                }
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Enter key to submit form
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName === 'INPUT') {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+            }
+            
+            // Escape key to clear form
+            if (e.key === 'Escape') {
+                document.getElementById('loginForm').reset();
+                document.getElementById('alertContainer').innerHTML = '';
+            }
+        });
+
+        // Auto-focus email field on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for existing session
+            checkExistingSession();
+            
+            // Focus email field
+            document.getElementById('email').focus();
+            
+            // Add form validation styling
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.style.borderColor = 'var(--danger-red)';
+                    } else {
+                        this.style.borderColor = 'var(--success-green)';
+                    }
+                });
+                
+                input.addEventListener('input', function() {
+                    this.style.borderColor = 'var(--walmart-blue)';
+                });
+            });
+            
+            // Add animation to logo
+            setTimeout(() => {
+                document.querySelector('.walmart-logo').style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    document.querySelector('.walmart-logo').style.transform = 'scale(1)';
+                }, 200);
+            }, 500);
+        });
+    </script>
+</body>
+</html>
